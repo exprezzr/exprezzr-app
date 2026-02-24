@@ -62,11 +62,41 @@
         document.getElementById('btn-pedir').style.display = 'block';
     }
 
-    function confirmarViaje() {
-        const destino = document.getElementById('input-destino').value;
-        alert(`¡Listo Ryan! Buscando un conductor para llevarte a: \n${destino}`);
+async function confirmarViaje() {
+    const destinoInput = document.getElementById('input-destino');
+    const destino = destinoInput.value;
+    const boton = document.getElementById('btn-pedir');
+    
+    // Si el campo está vacío, no hacemos nada
+    if (!destino) return;
+
+    try {
+        // Esta línea conecta con la ruta POST que creaste en index.js
+        const response = await fetch('/api/viajes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ destino: destino })
+        });
+
+        const datos = await response.json();
+
+        if (response.ok) {
+            // Si el servidor responde con éxito (status 201)
+            alert(`¡Excelente Ryan Ruffen! \nViaje guardado: ${destino}`);
+            
+            // Limpiamos el buscador para el próximo viaje
+            destinoInput.value = '';
+            boton.style.display = 'none';
+        } else {
+            alert('Error al guardar: ' + datos.error);
+        }
+    } catch (error) {
+        console.error('Error de conexión:', error);
+        alert('No se pudo conectar con el servidor para guardar el viaje.');
     }
-</script>
+}</script>
 
 </body>
 </html>

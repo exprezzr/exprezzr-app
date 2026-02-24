@@ -13,7 +13,7 @@ const rutasConductores = require('./routes/conductores');
 
 const app = express();
 const client = new Client({});
-
+app.use(express.json());
 // Para que Node pueda encontrar tu index.html dentro de la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/pasajeros', rutasPasajeros);
@@ -34,7 +34,19 @@ app.get('/api/autocomplete', async (req, res) => {
     res.status(500).send(e.message);
   }
 });
-
+// Ruta para que el pasajero guarde su pedido de taxi
+app.post('/api/viajes', async (req, res) => {
+    try {
+        const nuevoViaje = new Viaje({
+            destino: req.body.destino,
+            pasajero: "Ryan Ruffen" 
+        });
+        await nuevoViaje.save();
+        res.status(201).json({ mensaje: 'Viaje guardado con éxito', viaje: nuevoViaje });
+    } catch (error) {
+        res.status(500).json({ error: 'No se pudo guardar el viaje' });
+    }
+});
 app.listen(3000, () => {
   console.log("✅ Servidor de MI-TAXI-APP corriendo en http://localhost:3000");
 });
