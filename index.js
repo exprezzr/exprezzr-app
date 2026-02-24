@@ -3,12 +3,16 @@ require('dotenv').config();
 const express = require('express');
 const { Client } = require("@googlemaps/google-maps-services-js");
 const path = require('path');
+const rutasPasajeros = require('./routes/pasajeros');
+const rutasConductores = require('./routes/conductores');
 
 const app = express();
 const client = new Client({});
 
 // Para que Node pueda encontrar tu index.html dentro de la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/pasajeros', rutasPasajeros);
+app.use('/conductores', rutasConductores);
 
 app.get('/api/autocomplete', async (req, res) => {
   try {
