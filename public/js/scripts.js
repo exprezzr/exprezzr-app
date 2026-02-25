@@ -121,8 +121,8 @@ calcFareBtn.addEventListener('click', () => {
                 const distanceInMiles = distanceInMeters * 0.000621371;
                 
                 // 4. Tu fórmula de precios (Puedes cambiar estos números después)
-                const baseFare = 5.00; // $5 dólares solo por iniciar el viaje
-                const costPerMile = 2.50; // $2.50 dólares por cada milla recorrida
+                const baseFare = 10.00; // $5 dólares solo por iniciar el viaje
+                const costPerMile = 1.3; // $2.50 dólares por cada milla recorrida
                 
                 // 5. Calculamos el total
                 const finalPrice = baseFare + (distanceInMiles * costPerMile);
@@ -131,7 +131,7 @@ calcFareBtn.addEventListener('click', () => {
                 priceResult.style.display = 'block';
                 priceResult.innerHTML = `Viaje estimado a destino: <span>$${finalPrice.toFixed(2)}</span>`;
             } else {
-                
+
                  alert("No se pudo trazar la ruta. Verifica que las direcciones sean correctas.");
             }
         }
