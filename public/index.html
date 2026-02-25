@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exprezzr | Premium Taxi Service</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css"></head>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
 <body>
 
     <header>
@@ -14,52 +15,67 @@
             <span class="logo-text">EXPREZZR</span>
         </div>
         <nav>
-            <a href="#">Inicio</a>
-            <a href="#">Servicios</a>
-            <a href="/status" class="btn-sistema">Sistema</a>
+            <a href="#">Home</a>
+            <a href="#">Services</a>
+            <a href="/status" class="btn-system">System</a>
         </nav>
     </header>
 
     <section class="hero">
         <div class="hero-info">
-            <h1>Muévete con <br><span>ESTILO</span> y Seguridad</h1>
-            <p>La experiencia premium de transporte en Montreal. <br>Tecnología Tesla a tu servicio.</p>
+            <h1>Move with <br><span>STYLE</span> and Safety</h1>
+            <p>The premium transport experience in Montreal. <br>Tesla technology at your service.</p>
         </div>
 
         <div class="auth-container">
             <div class="tabs">
-                <div class="tab active" onclick="setTab('login')">Entrar</div>
-                <div class="tab" onclick="setTab('register')">Registrarse</div>
+                <div class="tab active" onclick="setTab('login')">Login</div>
+                <div class="tab" onclick="setTab('register')">Register</div>
             </div>
-            <form class="auth-form">
-                <input type="email" placeholder="Correo electrónico" required>
-                <input type="password" placeholder="Contraseña" required>
-                <button type="submit" id="main-btn" class="btn-primary">Entrar a mi Cuenta</button>
+            <form class="auth-form" id="authForm">
+                <input type="email" placeholder="Email Address" required>
+                <input type="password" placeholder="Password" required>
+                
+                <div id="roleSelector" class="role-selector" style="display: none;">
+                    <label>
+                        <input type="radio" name="role" value="user" checked> Passenger
+                    </label>
+                    <label>
+                        <input type="radio" name="role" value="driver"> Driver
+                    </label>
+                </div>
+
+                <div id="driverFields" style="display: none; margin-top: 10px;">
+                    <input type="text" id="licenseNumber" placeholder="Driver License Number">
+                    <p style="font-size: 11px; color: var(--gold); margin-top: -5px; margin-bottom: 15px;">* Exprezzr fleet uses Tesla Model Y by default</p>
+                </div>
+
+                <button type="submit" id="main-btn" class="btn-primary">Login to Account</button>
             </form>
         </div>
     </section>
 
     <section class="autos-section">
-        <h2>Nuestra Flota Exclusive</h2>
+        <h2>Exclusive Fleet</h2>
         <div class="autos-grid">
             <div class="auto-card">
                 <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=500&q=60" alt="Tesla Model Y">
                 <h3>Tesla Model Y</h3>
-                <p>Silencio, lujo y cero emisiones para cruzar la ciudad con elegancia.</p>
+                <p>Silence, luxury, and zero emissions to cross the city with elegance.</p>
             </div>
             <div class="auto-card">
                 <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=500&q=60" alt="CAPI Tech">
                 <h3>CAPI Intelligence</h3>
-                <p>Navegación inteligente y máxima seguridad en cada kilómetro.</p>
+                <p>Smart navigation and maximum safety in every kilometer.</p>
             </div>
         </div>
     </section>
 
     <footer>
         <p>© 2026 Exprezzr App | <span style="color:var(--gold)">support@exprezzr.com</span></p>
-        <p style="margin-top:10px; opacity:0.5">Infraestructura: Google Cloud (us-central1)</p>
+        <p style="margin-top:10px; opacity:0.5">Infrastructure: Google Cloud (us-central1)</p>
     </footer>
 
-<script src="js/scripts.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
