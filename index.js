@@ -16,15 +16,16 @@ const mongoURI = 'mongodb://localhost:27017/taxi_app_db';
 mongoose.connect(mongoURI)
   .then(() => {
     console.log('------------------------------------');
-    console.log('✅ MONGODB: Conexión establecida correctamenteeeee');
+    console.log('✅ MONGODB: establecida correctamnte');
     console.log('------------------------------------');
   })
   .catch(err => {
     console.error('❌ MONGODB: Error de conexión:', err);
   });
 
-// INICIO DEL SERVIDOR
-app.listen(port, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
-  console.log('Presiona Ctrl+C para detenerlo');
+// Este bloque debe ir al final de index.js
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor en vivo: http://localhost:${PORT}`);
+    console.log('👀 Monitoreando cambios en el código...');
 });
