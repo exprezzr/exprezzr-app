@@ -17,7 +17,7 @@ steps:
       - '--image'
       - 'gcr.io/$PROJECT_ID/taxi-app'
       - '--region'
-      - 'northamerica-northeast1'
+      - 'us-central1'
       - '--allow-unauthenticated'
 
 options:
