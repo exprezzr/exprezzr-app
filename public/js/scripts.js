@@ -17,13 +17,12 @@ function setTab(type) {
         btn.innerText = 'Create New Account';
         roleSelector.style.display = 'flex';
         
-        // Show license field only if 'driver' is currently selected
         const isDriver = document.querySelector('input[name="role"]:checked')?.value === 'driver';
         driverFields.style.display = isDriver ? 'block' : 'none';
     }
 }
 
-// 2. Listener for changes in the Role (Passenger vs Driver)
+// 2. Listener for changes in the Role
 document.addEventListener('change', (e) => {
     if (e.target.name === 'role') {
         const driverFields = document.getElementById('driverFields');
@@ -39,7 +38,6 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
     const password = e.target.querySelector('input[type="password"]').value;
     const roleInput = document.querySelector('input[name="role"]:checked');
     
-    // Only care about roles if we are in 'Register' mode
     const isRegistering = document.getElementById('main-btn').innerText === 'Create New Account';
     const role = isRegistering ? roleInput.value : 'login_attempt';
     
@@ -53,9 +51,8 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
         registrationData.vehicleModel = "Tesla Model Y"; 
     }
 
-    // Connect to your Node.js server
     try {
-        const response = await fetch('http://localhost:5000/api/register', {
+        const response = await fetch('http://localhost:3000/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(registrationData)
@@ -66,4 +63,33 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
         console.error("Connection failed", err);
         alert("Server is not responding. Check if 'npm run dev' is running.");
     }
-});
+}); // <--- ESTA ES LA LLAVE QUE FALTABA
+
+// 4. Google Maps Initialization (Pro-Style)
+let map, taxiMarker;
+
+function initMap() {
+    const myPosition = { lat: 42.2959, lng: -71.7128 }; // Shrewsbury, MA
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: myPosition,
+        styles: [
+            { "elementType": "geometry", "stylers": [{ "color": "#212121" }] },
+            { "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+            { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#303030" }] },
+            { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#000000" }] }
+        ]
+    });
+
+    taxiMarker = new google.maps.Marker({
+        position: myPosition,
+        map: map,
+        title: "Exprezzr Unit - Tesla Model Y",
+        icon: {
+            url: "https://cdn-icons-png.flaticon.com/512/741/741407.png", 
+            scaledSize: new google.maps.Size(40, 40)
+        },
+        animation: google.maps.Animation.DROP
+    });
+}

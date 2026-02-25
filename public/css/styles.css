@@ -1,97 +1,417 @@
-:root { --gold: #f4d03f; --black: #0b0b0b; --card-bg: rgba(21, 21, 21, 0.85); --text: #ffffff; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi App - Ryan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --gold: #f4d03f; 
+            --black: #0b0b0b; 
+            --card-bg: rgba(21, 21, 21, 0.85); 
+            --text: #ffffff; 
+        }
 
-body { margin: 0; background-color: var(--black); color: var(--text); font-family: 'Inter', sans-serif; }
+        body { 
+            margin: 0; 
+            background-color: var(--black); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+        }
 
-/* NAVBAR - Mantenemos el padding bajo para ganar espacio */
-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 5px 5%; 
-    background: rgba(0,0,0,0.95); 
-    border-bottom: 2px solid var(--gold);
-    position: sticky; 
-    top: 0; 
-    z-index: 1000;
-}
-.logo-area { display: flex; align-items: center; }
-.logo-area img { height: 50px; margin-right: 15px; } /* Reducimos ligeramente el logo para ganar altura */
-.logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
+        /* NAVBAR */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 5px 5%; 
+            background: rgba(0,0,0,0.95); 
+            border-bottom: 2px solid var(--gold);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
 
-nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
-nav a:hover { color: var(--gold); }
-.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+        .logo-area { display: flex; align-items: center; }
+        .logo-area img { height: 50px; margin-right: 15px; }
+        .logo-text { 
+            font-family: 'Orbitron', sans-serif; 
+            font-weight: bold; 
+            font-size: 20px; 
+            color: var(--gold); 
+            letter-spacing: 2px; 
+        }
 
-/* HERO SECTION - SUBIMOS TODO EL CUERPO AQUÍ */
-.hero { 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-around; 
-    padding: 20px 5% 40px 5%; /* BAJAMOS EL PADDING SUPERIOR DE 100PX A 20PX */
-    min-height: 80vh; /* Ajustamos la altura mínima */
-    flex-wrap: wrap;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-                url('../images/hero-bg.jpg'); 
-    background-size: cover; 
-    background-position: center;
-    background-attachment: fixed;
-}
+        /* NAVEGACIÓN - ORDEN: Registro, User, Services, Support, About */
+        nav { display: flex; align-items: center; }
 
-.hero-info { 
-    max-width: 550px; 
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.8); 
-    margin-top: -20px; /* MARGEN NEGATIVO PARA SUBIR EL TEXTO */
-}
-.hero-info h1 { 
-    font-size: 3.5rem; 
-    margin: 0; 
-    line-height: 1.1; 
-    font-family: 'Orbitron', sans-serif; 
-}
-.hero-info h1 span { color: var(--gold); }
-.hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 15px; font-weight: 300; }
+        nav a { 
+            color: white; 
+            text-decoration: none; 
+            margin-left: 20px; 
+            font-weight: bold; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            display: inline-block; 
+        }
 
-/* FORMULARIO CON EFECTO CRISTAL - TAMBIÉN SUBE */
-.auth-container { 
-    background: var(--card-bg); 
-    padding: 35px; 
-    border-radius: 24px; 
-    width: 100%; 
-    max-width: 380px; 
-    border: 1px solid rgba(244, 208, 63, 0.3);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
-    margin-top: -10px; /* MARGEN NEGATIVO PARA SUBIR EL FORMULARIO */
-}
+        nav a:hover { 
+            color: var(--gold); 
+        }
 
-/* El resto de estilos se mantienen igual */
-.tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid #333; }
-.tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888; font-weight: bold; transition: 0.3s; }
-.tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
+        nav a:first-child { margin-left: 0; }
 
-.auth-form input { 
-    width: 100%; padding: 14px; margin-bottom: 15px; background: rgba(255,255,255,0.05); 
-    border: 1px solid #444; border-radius: 12px; color: white; box-sizing: border-box;
-    outline: none; transition: 0.3s;
-}
-.auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+        .btn-sistema { 
+            border: 1px solid var(--gold); 
+            padding: 8px 18px; 
+            border-radius: 25px; 
+            color: var(--gold) !important; 
+        }
 
-.btn-primary { 
-    width: 100%; padding: 16px; background: var(--gold); color: black; 
-    border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
-    font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
-}
-.btn-primary:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(244, 208, 63, 0.4); }
+        /* HERO SECTION */
+        .hero { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-around; 
+            padding: 20px 5% 40px 5%; 
+            min-height: 80vh; 
+            flex-wrap: wrap;
+            /* RUTA CORREGIDA: Sin los puntos iniciales */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                        url('images/hero-bg.jpg'); 
+            background-size: cover; 
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-.autos-section { padding: 60px 5%; text-align: center; background: #050505; }
-.autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
-.autos-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-.auto-card { 
-    background: #111; padding: 25px; border-radius: 20px; 
-    width: 300px; border: 1px solid #222; transition: 0.4s;
-}
-.auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-.auto-card img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
-.auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.5rem; }
+        .hero-info { 
+            max-width: 550px; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8); 
+            margin-top: -20px; 
+        }
 
-footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
+        .hero-info h1 { 
+            font-size: 3.5rem; 
+            margin: 0; 
+            line-height: 1.1; 
+            font-family: 'Orbitron', sans-serif; 
+        }
+
+        .hero-info h1 span { color: var(--gold); }
+        .hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 15px; font-weight: 300; }
+
+        /* FORMULARIO CRISTAL */
+        .auth-container { 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 380px; 
+            border: 1px solid rgba(244, 208, 63, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            margin-top: -10px; 
+        }
+
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid #333; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888; font-weight: bold; transition: 0.3s; }
+        .tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
+
+        .auth-form input { 
+            width: 100%; padding: 14px; margin-bottom: 15px; background: rgba(255,255,255,0.05); 
+            border: 1px solid #444; border-radius: 12px; color: white; box-sizing: border-box;
+            outline: none; transition: 0.3s;
+        }
+
+        .auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        .btn-primary { 
+            width: 100%; padding: 16px; background: var(--gold); color: black; 
+            border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+            font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+
+        .btn-primary:hover { 
+            background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(244, 208, 63, 0.4); 
+        }
+
+        /* SECCIÓN AUTOS */
+        .autos-section { padding: 60px 5%; text-align: center; background: #050505; }
+        .autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
+        .autos-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        
+        .auto-card { 
+            background: #111; padding: 25px; border-radius: 20px; 
+            width: 300px; border: 1px solid #222; transition: 0.4s;
+        }
+
+        .auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
+        .auto-card img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
+        .auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.5rem; }
+
+        footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="images/logo.png" alt="Logo">
+            <span class="logo-text">TAXI APP</span>
+        </div>
+        <nav>
+            <a href="/register" class="btn-sistema">Register</a>
+            <a href="/user">User</a>
+            <a href="/services">Services</a>
+            <a href="/support">Support</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-info">
+            <h1>VIAJA CON <span>ESTILO</span></h1>
+            <p>La aplicación de transporte más avanzada en Shrewsbury. Rápida, segura y con acabados de lujo.</p>
+        </div>
+
+        <div class="auth-container">
+            <div class="tabs">
+                <div class="tab active">Ingresar</div>
+                <div class="tab">Registro</div>
+            </div>
+            <form class="auth-form">
+                <input type="email" placeholder="Correo Electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary">Comenzar Viaje</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="autos-section">
+        <h2>Nuestra Flota</h2>
+        <div class="autos-grid">
+            <div class="auto-card">
+                <img src="images/tesla.jpg" alt="Tesla">
+                <h3>Premium</h3>
+                <p>Tesla Model 3 - 2024</p>
+            </div>
+        </div>
+    </section><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi App - Ryan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --gold: #f4d03f; 
+            --black: #0b0b0b; 
+            --card-bg: rgba(21, 21, 21, 0.85); 
+            --text: #ffffff; 
+        }
+
+        body { 
+            margin: 0; 
+            background-color: var(--black); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        /* NAVBAR */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 5px 5%; 
+            background: rgba(0,0,0,0.95); 
+            border-bottom: 2px solid var(--gold);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
+
+        .logo-area { display: flex; align-items: center; }
+        .logo-area img { height: 50px; margin-right: 15px; }
+        .logo-text { 
+            font-family: 'Orbitron', sans-serif; 
+            font-weight: bold; 
+            font-size: 20px; 
+            color: var(--gold); 
+            letter-spacing: 2px; 
+        }
+
+        /* NAVEGACIÓN - ORDEN: Registro, User, Services, Support, About */
+        nav { display: flex; align-items: center; }
+
+        nav a { 
+            color: white; 
+            text-decoration: none; 
+            margin-left: 20px; 
+            font-weight: bold; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            display: inline-block; 
+        }
+
+        nav a:hover { 
+            color: var(--gold); 
+        }
+
+        nav a:first-child { margin-left: 0; }
+
+        .btn-sistema { 
+            border: 1px solid var(--gold); 
+            padding: 8px 18px; 
+            border-radius: 25px; 
+            color: var(--gold) !important; 
+        }
+
+        /* HERO SECTION */
+        .hero { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-around; 
+            padding: 20px 5% 40px 5%; 
+            min-height: 80vh; 
+            flex-wrap: wrap;
+            /* RUTA CORREGIDA: Sin los puntos iniciales */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                        url('images/hero-bg.jpg'); 
+            background-size: cover; 
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero-info { 
+            max-width: 550px; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8); 
+            margin-top: -20px; 
+        }
+
+        .hero-info h1 { 
+            font-size: 3.5rem; 
+            margin: 0; 
+            line-height: 1.1; 
+            font-family: 'Orbitron', sans-serif; 
+        }
+
+        .hero-info h1 span { color: var(--gold); }
+        .hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 15px; font-weight: 300; }
+
+        /* FORMULARIO CRISTAL */
+        .auth-container { 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 380px; 
+            border: 1px solid rgba(244, 208, 63, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            margin-top: -10px; 
+        }
+
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid #333; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888; font-weight: bold; transition: 0.3s; }
+        .tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
+
+        .auth-form input { 
+            width: 100%; padding: 14px; margin-bottom: 15px; background: rgba(255,255,255,0.05); 
+            border: 1px solid #444; border-radius: 12px; color: white; box-sizing: border-box;
+            outline: none; transition: 0.3s;
+        }
+
+        .auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        .btn-primary { 
+            width: 100%; padding: 16px; background: var(--gold); color: black; 
+            border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+            font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+
+        .btn-primary:hover { 
+            background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(244, 208, 63, 0.4); 
+        }
+
+        /* SECCIÓN AUTOS */
+        .autos-section { padding: 60px 5%; text-align: center; background: #050505; }
+        .autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
+        .autos-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        
+        .auto-card { 
+            background: #111; padding: 25px; border-radius: 20px; 
+            width: 300px; border: 1px solid #222; transition: 0.4s;
+        }
+
+        .auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
+        .auto-card img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
+        .auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.5rem; }
+
+        footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="images/logo.png" alt="Logo">
+            <span class="logo-text">TAXI APP</span>
+        </div>
+        <nav>
+            <a href="/register" class="btn-sistema">Register</a>
+            <a href="/user">User</a>
+            <a href="/services">Services</a>
+            <a href="/support">Support</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-info">
+            <h1>VIAJA CON <span>ESTILO</span></h1>
+            <p>La aplicación de transporte más avanzada en Shrewsbury. Rápida, segura y con acabados de lujo.</p>
+        </div>
+
+        <div class="auth-container">
+            <div class="tabs">
+                <div class="tab active">Ingresar</div>
+                <div class="tab">Registro</div>
+            </div>
+            <form class="auth-form">
+                <input type="email" placeholder="Correo Electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary">Comenzar Viaje</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="autos-section">
+        <h2>Nuestra Flota</h2>
+        <div class="autos-grid">
+            <div class="auto-card">
+                <img src="images/tesla.jpg" alt="Tesla">
+                <h3>Premium</h3>
+                <p>Tesla Model 3 - 2024</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Taxi App - Ryan Ruffen. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
+
+    <footer>
+        <p>&copy; 2026 Taxi App - Ryan Ruffen. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
