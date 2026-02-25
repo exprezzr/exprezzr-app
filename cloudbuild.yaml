@@ -9,6 +9,9 @@ steps:
     entrypoint: npm
     args: ['run', 'build']
 
-  # 3. Mostrar que la construcción fue exitosa
+  # 3. Mensaje de confirmación
   - name: 'ubuntu'
     args: ['echo', '¡La aplicación de taxi se ha compilado correctamente!']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
