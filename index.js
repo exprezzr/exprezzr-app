@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const { Client } = require("@googlemaps/google-maps-services-js");
 const mongoose = require('mongoose');
-const Usuario = require('./models/Usuario'); // Añade esta línea cerca de la línea 6
+const Usuario = require('./models/Usuario'); 
 const Viaje = require('./models/Viaje');
 const path = require('path');
 const rutasPasajeros = require('./routes/pasajeros');
@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/taxi-app')
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rutas de archivos externos (Opcional si las usas)
+// Rutas de archivos externos
 app.use('/pasajeros', rutasPasajeros);
 app.use('/conductores', rutasConductores);
 
@@ -66,9 +66,9 @@ app.get('/api/viajes/pendientes', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener viajes' });
     }
-}); // <--- Verifica que este cierre esté así
+});
 
-// 4. Aceptar un viaje (Cambia el estado)
+// 4. Aceptar un viaje
 app.post('/api/viajes/aceptar/:id', async (req, res) => {
     try {
         const viajeActualizado = await Viaje.findByIdAndUpdate(
@@ -80,9 +80,9 @@ app.post('/api/viajes/aceptar/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'No se pudo aceptar el viaje' });
     }
-}); // <--- Este cierra la ruta 4// --- REGISTRO Y ENCENDIDO ---
+});
 
-// Ruta para registrar nuevos usuarios en MongoDB
+// 5. Registro de usuarios
 app.post('/api/usuarios/registro', async (req, res) => {
     try {
         const nuevoUsuario = new Usuario(req.body);
@@ -93,9 +93,10 @@ app.post('/api/usuarios/registro', async (req, res) => {
     }
 });
 
-// El servidor usará el puerto que le asigne la nube o el 3000 por defecto
-const PORT = process.env.PORT || 3000;
+// --- ENCENDIDO DEL SERVIDOR ---
+// Usamos 8080 para mejorar la compatibilidad con dominios de Workspace/Cloud
+const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Exprezzr corriendo en el puerto ${PORT}`);
 });
