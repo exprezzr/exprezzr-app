@@ -4,93 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taxi App - Ryan</title>
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { 
-            --gold: #f4d03f; 
-            --black: #0b0b0b; 
-            --card-bg: rgba(21, 21, 21, 0.85); 
-            --text: #ffffff; 
-        }
-
-        body { 
-            margin: 0; 
-            background-color: var(--black); 
-            color: var(--text); 
-            font-family: 'Inter', sans-serif; 
-            overflow-x: hidden;
-        }
-
-        /* NAVBAR */
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 5px 5%; 
-            background: rgba(0,0,0,0.95); 
-            border-bottom: 2px solid var(--gold);
-            position: sticky; 
-            top: 0; 
-            z-index: 1000;
-        }
-
-        .logo-area { display: flex; align-items: center; }
-        .logo-area img { height: 50px; margin-right: 15px; }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
-
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; display: inline-block; }
-        nav a:hover { color: var(--gold); }
-        .btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
-
-        /* HERO SECTION */
-        .hero { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 60px 5%; 
-            min-height: 50vh; 
-            text-align: center;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('images/hero-bg.jpg'); 
-            background-size: cover; 
-            background-position: center;
-        }
-
-        .hero-info h1 { font-size: 4rem; margin: 0; font-family: 'Orbitron', sans-serif; }
-        .hero-info h1 span { color: var(--gold); }
-
-        /* CARS SECTION SLIDER */
-        .autos-section { padding: 60px 5%; text-align: center; background: #050505; overflow: hidden; }
-        .autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
-        
-        /* Contenedor del Slider */
-        .slider-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .autos-grid { 
-            display: flex; 
-            gap: 20px; 
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .auto-card { 
-            background: #111; 
-            padding: 20px; 
-            border-radius: 20px; 
-            min-width: calc(25% - 15px); /* Muestra 4 cartas (100% / 4) */
-            border: 1px solid #222; 
-            box-sizing: border-box;
-        }
-        
-        .auto-card img { width: 100%; border-radius: 15px; margin-bottom: 15px; height: 150px; object-fit: cover; }
-        .auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.2rem; }
-
-        footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; }
-    </style>
 </head>
 <body>
 
@@ -111,52 +26,52 @@
     <section class="hero">
         <div class="hero-info">
             <h1>TRAVEL WITH <span>STYLE</span></h1>
-            <p>Safety and luxury in every journey.</p>
+            <p>The most advanced transportation app in Shrewsbury. <br> Safety and luxury in every journey.</p>
         </div>
     </section>
 
+<section class="booking-section">
+        <div class="booking-container">
+            <div class="booking-form">
+                <h2>Book a Ride</h2>
+                <div class="input-group">
+                    <input type="text" id="origin" placeholder="Presiona 📍 para tu ubicación..." readonly>
+                    <button id="locateBtn" class="btn-locate" title="Obtener mi ubicación">📍</button>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="destination" placeholder="Destino (Ej. Boston)">
+                </div>
+                <button id="calcFareBtn" class="btn-sistema" style="width: 100%; margin-top: 10px;">Calcular Tarifa</button>
+                <div id="priceResult" class="price-result"></div>
+            </div>
+            <div id="map" class="map-container"></div>
+        </div>
+    </section>
+    
     <section class="autos-section">
         <h2>Our Fleet</h2>
-<div class="auto-card">
-    <img src="images/tesla-model-y.png" alt="Tesla Model Y">
-    <h3>Premium 1</h3>
-    <p>Tesla Model Y Performance</p>
-</div>    
-    <div class="auto-card"><img src="images/car2.png" alt="Car"><h3>Executive 2</h3><p>BMW i7</p></div>
-    <div class="auto-card"><img src="images/car3.png" alt="Car"><h3>Luxury 3</h3><p>Mercedes EQS</p></div>
-    <div class="auto-card"><img src="images/car4.png" alt="Car"><h3>Business 4</h3><p>Audi e-tron</p></div>
-    <div class="auto-card"><img src="images/car5.png" alt="Car"><h3>Premium 5</h3><p>Tesla Model S</p></div>
-    <div class="auto-card"><img src="images/car6.png" alt="Car"><h3>Luxury 6</h3><p>Lucid Air</p></div>
-    <div class="auto-card"><img src="images/car7.png" alt="Car"><h3>SUV 7</h3><p>Model X</p></div>
-    <div class="auto-card"><img src="images/car8.png" alt="Car"><h3>Executive 8</h3><p>Porsche Taycan</p></div>
-    <div class="auto-card"><img src="images/car9.png" alt="Car"><h3>Business 9</h3><p>Volvo C40</p></div>
-    <div class="auto-card"><img src="images/car10.png" alt="Car"><h3>Luxury 10</h3><p>BMW iX</p></div>
-</div>        </div>
+        <div class="slider-container">
+            <div class="autos-grid" id="carSlider">
+                <div class="auto-card"><img src="images/tesla-model-y.png" alt="Tesla Model Y"><h3>Premium 1</h3><p>Tesla Model Y</p></div>
+                <div class="auto-card"><img src="images/car2.png" alt="Car"><h3>Executive 2</h3><p>BMW i7</p></div>
+                <div class="auto-card"><img src="images/car3.png" alt="Car"><h3>Luxury 3</h3><p>Mercedes EQS</p></div>
+                <div class="auto-card"><img src="images/car4.png" alt="Car"><h3>Business 4</h3><p>Audi e-tron</p></div>
+                <div class="auto-card"><img src="images/car5.png" alt="Car"><h3>Premium 5</h3><p>Tesla Model S</p></div>
+                <div class="auto-card"><img src="images/car6.png" alt="Car"><h3>Luxury 6</h3><p>Lucid Air</p></div>
+                <div class="auto-card"><img src="images/car7.png" alt="Car"><h3>SUV 7</h3><p>Model X</p></div>
+                <div class="auto-card"><img src="images/car8.png" alt="Car"><h3>Executive 8</h3><p>Porsche Taycan</p></div>
+                <div class="auto-card"><img src="images/car9.png" alt="Car"><h3>Business 9</h3><p>Volvo C40</p></div>
+                <div class="auto-card"><img src="images/car10.png" alt="Car"><h3>Luxury 10</h3><p>BMW iX</p></div>
+            </div>
+        </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 Taxi App - Ryan Ruffen. All rights reserved.</p>
+        <p>&copy; 2026 Taxi App - Ryan Ruffin. All rights reserved.</p>
     </footer>
 
-    <script>
-        // Lógica para que el slider cambie de 4 en 4
-        const slider = document.getElementById('carSlider');
-        let index = 0;
-
-        function rotateCars() {
-            index++;
-            // Como mostramos 4, y hay 10, solo puede moverse un par de veces antes de reiniciar
-            // Ajustamos el movimiento basado en el ancho de las cartas
-            if (index > 6) { // 10 total - 4 visibles = 6 pasos posibles
-                index = 0;
-            }
-            const movePercentage = index * (25); // Mueve 25% cada vez
-            slider.style.transform = `translateX(-${movePercentage}%)`;
-        }
-
-        // Cambia cada 3 segundos
-        setInterval(rotateCars, 3000);
-    </script>
+<script src="js/scripts.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAw_gxrw_-wXM3o8LH9MJ7hHZeRQpJEn-s&callback=initMap&libraries=places" async defer></script>
 
 </body>
-</html> 
+</html>

@@ -1,168 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taxi App - Ryan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { 
-            --gold: #f4d03f; 
-            --black: #0b0b0b; 
-            --card-bg: rgba(21, 21, 21, 0.85); 
-            --text: #ffffff; 
-        }
+:root { 
+    --gold: #f4d03f; 
+    --black: #0b0b0b; 
+    --card-bg: rgba(21, 21, 21, 0.85); 
+    --text: #ffffff; 
+}
 
-        body { 
-            margin: 0; 
-            background-color: var(--black); 
-            color: var(--text); 
-            font-family: 'Inter', sans-serif; 
-            overflow-x: hidden;
-        }
+body { 
+    margin: 0; 
+    background-color: var(--black); 
+    color: var(--text); 
+    font-family: 'Inter', sans-serif; 
+    overflow-x: hidden;
+}
 
-        /* NAVBAR */
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 5px 5%; 
-            background: rgba(0,0,0,0.95); 
-            border-bottom: 2px solid var(--gold);
-            position: sticky; 
-            top: 0; 
-            z-index: 1000;
-        }
+/* NAVBAR */
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 5px 5%; 
+    background: rgba(0,0,0,0.95); 
+    border-bottom: 2px solid var(--gold);
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
+}
 
-        .logo-area { display: flex; align-items: center; }
-        .logo-area img { height: 50px; margin-right: 15px; }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
+.logo-area { display: flex; align-items: center; }
+.logo-area img { height: 50px; margin-right: 15px; display: block; }
+.logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
 
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; display: inline-block; }
-        nav a:hover { color: var(--gold); }
-        .btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; display: inline-block; }
+nav a:hover { color: var(--gold); }
+.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
 
-        /* HERO SECTION */
-        .hero { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 60px 5%; 
-            min-height: 50vh; 
-            text-align: center;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('images/hero-bg.jpg'); 
-            background-size: cover; 
-            background-position: center;
-        }
+/* HERO SECTION */
+.hero { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 60px 5%; 
+    min-height: 50vh; 
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('../images/hero-bg.jpg'); 
+    background-size: cover; 
+    background-position: center;
+}
 
-        .hero-info h1 { font-size: 4rem; margin: 0; font-family: 'Orbitron', sans-serif; }
-        .hero-info h1 span { color: var(--gold); }
-        .hero-info p { font-size: 1.4rem; opacity: 0.9; margin-top: 20px; font-weight: 300; }
+.hero-info h1 { font-size: 4rem; margin: 0; font-family: 'Orbitron', sans-serif; }
+.hero-info h1 span { color: var(--gold); }
+.hero-info p { font-size: 1.4rem; opacity: 0.9; margin-top: 20px; font-weight: 300; }
 
-        /* CARS SECTION SLIDER */
-        .autos-section { padding: 60px 5%; text-align: center; background: #050505; overflow: hidden; }
-        .autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
-        
-        .slider-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-        }
+/* CARS SECTION SLIDER */
+.autos-section { padding: 60px 5%; text-align: center; background: #050505; overflow: hidden; }
+.autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; }
 
-        .autos-grid { 
-            display: flex; 
-            gap: 20px; 
-            transition: transform 0.5s ease-in-out;
-        }
+.slider-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden; 
+}
 
-        .auto-card { 
-            background: #111; 
-            padding: 20px; 
-            border-radius: 20px; 
-            min-width: calc(25% - 15px); 
-            border: 1px solid #222; 
-            box-sizing: border-box;
-            transition: 0.4s;
-        }
+.autos-grid { 
+    display: flex; 
+    gap: 20px; 
+    transition: transform 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95); 
+    width: max-content; 
+}
 
-        .auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-        
-        /* Imagen adaptada para no romper el slider */
-        .auto-card img { 
-            width: 100%; 
-            height: 180px; 
-            object-fit: contain; 
-            background: #111;
-            border-radius: 15px; 
-            margin-bottom: 15px; 
-        }
+.auto-card { 
+    background: #111; 
+    padding: 20px; 
+    border-radius: 20px; 
+    width: 285px; 
+    border: 1px solid #222; 
+    box-sizing: border-box;
+    transition: 0.4s;
+}
 
-        .auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.2rem; }
+.auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
 
-        footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
-    </style>
-</head>
-<body>
+.auto-card img { 
+    width: 100%; 
+    height: 180px; 
+    object-fit: contain; 
+    background: #111;
+    border-radius: 15px; 
+    margin-bottom: 15px; 
+}
 
-    <header>
-        <div class="logo-area">
-            <img src="images/logo.png" alt="Logo">
-            <span class="logo-text">TAXI APP</span>
-        </div>
-        <nav>
-            <a href="/register" class="btn-sistema">Register</a>
-            <a href="/user">User</a>
-            <a href="/services">Services</a>
-            <a href="/support">Support</a>
-            <a href="/about">About</a>
-        </nav>
-    </header>
+.auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.2rem; }
 
-    <section class="hero">
-        <div class="hero-info">
-            <h1>TRAVEL WITH <span>STYLE</span></h1>
-            <p>The most advanced transportation app in Shrewsbury. <br> Safety and luxury in every journey.</p>
-        </div>
-    </section>
-
-    <section class="autos-section">
-        <h2>Our Fleet</h2>
-        <div class="slider-container">
-            <div class="autos-grid" id="carSlider">
-                <div class="auto-card"><img src="images/tesla-model-y.png" alt="Tesla Model Y"><h3>Premium 1</h3><p>Tesla Model Y</p></div>
-                <div class="auto-card"><img src="images/car2.png" alt="Car"><h3>Executive 2</h3><p>BMW i7</p></div>
-                <div class="auto-card"><img src="images/car3.png" alt="Car"><h3>Luxury 3</h3><p>Mercedes EQS</p></div>
-                <div class="auto-card"><img src="images/car4.png" alt="Car"><h3>Business 4</h3><p>Audi e-tron</p></div>
-                <div class="auto-card"><img src="images/car5.png" alt="Car"><h3>Premium 5</h3><p>Tesla Model S</p></div>
-                <div class="auto-card"><img src="images/car6.png" alt="Car"><h3>Luxury 6</h3><p>Lucid Air</p></div>
-                <div class="auto-card"><img src="images/car7.png" alt="Car"><h3>SUV 7</h3><p>Model X</p></div>
-                <div class="auto-card"><img src="images/car8.png" alt="Car"><h3>Executive 8</h3><p>Porsche Taycan</p></div>
-                <div class="auto-card"><img src="images/car9.png" alt="Car"><h3>Business 9</h3><p>Volvo C40</p></div>
-                <div class="auto-card"><img src="images/car10.png" alt="Car"><h3>Luxury 10</h3><p>BMW iX</p></div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 Taxi App - Ryan Ruffen. All rights reserved.</p>
-    </footer>
-
-    <script>
-        const slider = document.getElementById('carSlider');
-        let index = 0;
-
-        function rotateCars() {
-            index++;
-            if (index > 6) { // 10 total - 4 visible = 6 movements
-                index = 0;
-            }
-            const movePercentage = index * 25; 
-            slider.style.transform = `translateX(-${movePercentage}%)`;
-        }
-
-        setInterval(rotateCars, 3000);
-    </script>
-</body>
-</html>
+footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
+/* BOOKING & MAP SECTION */
+.booking-section { padding: 60px 5%; background: #0b0b0b; display: flex; justify-content: center; }
+.booking-container { display: flex; flex-wrap: wrap; max-width: 1000px; width: 100%; background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #333; }
+.booking-form { flex: 1; padding: 30px; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
+.booking-form h2 { color: var(--gold); margin-top: 0; font-family: 'Orbitron', sans-serif; }
+.input-group { display: flex; gap: 10px; }
+.input-group input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #000; color: white; outline: none; font-family: 'Inter', sans-serif;}
+.input-group input:focus { border-color: var(--gold); }
+.btn-locate { background: var(--gold); border: none; border-radius: 8px; cursor: pointer; padding: 0 15px; font-size: 1.2rem; transition: 0.3s;}
+.btn-locate:hover { background: #fff; }
+.price-result { margin-top: 15px; font-size: 1.1rem; font-weight: bold; color: #fff; text-align: center; display: none; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;}
+.price-result span { color: var(--gold); font-size: 1.8rem; display: block; margin-top: 5px; font-family: 'Orbitron', sans-serif;}
+.map-container { flex: 1; min-width: 300px; min-height: 450px; background: #222; z-index: 1; }
