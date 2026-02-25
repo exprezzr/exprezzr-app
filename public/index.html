@@ -1,40 +1,128 @@
 <!DOCTYPE html>
 <html lang="es">
-<header style="background: #121212; padding: 15px 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f4d03f; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-    <div style="display: flex; align-items: center;">
-        <img src="images/logo-capi.png" alt="CAPI Logo" style="height: 55px; width: auto; filter: drop-shadow(0px 0px 5px rgba(244, 208, 63, 0.3));">
-        <div style="margin-left: 15px;">
-            <span style="display: block; font-size: 22px; font-weight: bold; color: #f4d03f; letter-spacing: 2px; line-height: 1;">EXPREZZR</span>
-            <span style="font-size: 10px; color: #fff; text-transform: uppercase; letter-spacing: 1px;">Premium Taxi Service</span>
-        </div>
-    </div>
-    <nav>
-        <a href="/" style="color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; margin-left: 25px; transition: 0.3s;">INICIO</a>
-        <a href="/status" style="color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; margin-left: 25px; border: 1px solid #f4d03f; padding: 5px 15px; border-radius: 20px;">SISTEMA</a>
-    </nav>
-</header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exprezzr | Premium Taxi Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #f4d03f; --black: #0b0b0b; --card-bg: #151515; --text: #ffffff; }
+        
+        body { margin: 0; background-color: var(--black); color: var(--text); font-family: 'Inter', sans-serif; }
+        
+        /* NAVBAR */
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 5%; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--gold);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo-area { display: flex; align-items: center; }
+        .logo-area img { height: 50px; margin-right: 15px; }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 22px; color: var(--gold); letter-spacing: 2px; }
+        
+        nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
+        nav a:hover { color: var(--gold); }
+        .btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+
+        /* HERO SECTION */
+        .hero { 
+            display: flex; align-items: center; justify-content: space-around; 
+            padding: 80px 5%; min-height: 70vh; flex-wrap: wrap;
+            background: radial-gradient(circle at top right, #222, #0b0b0b);
+        }
+        .hero-info { max-width: 500px; }
+        .hero-info h1 { font-size: 3.5rem; margin: 0; line-height: 1.1; }
+        .hero-info h1 span { color: var(--gold); }
+        .hero-info p { font-size: 1.1rem; opacity: 0.8; margin-top: 20px; }
+
+        /* AUTH CARD (EL FORMULARIO) */
+        .auth-container { 
+            background: var(--card-bg); padding: 40px; border-radius: 20px; 
+            width: 100%; max-width: 380px; border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(244, 208, 63, 0.1);
+        }
+        .tabs { display: flex; margin-bottom: 30px; border-bottom: 1px solid #333; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; color: #666; font-weight: bold; }
+        .tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
+
+        .auth-form input { 
+            width: 100%; padding: 12px; margin-bottom: 15px; background: #222; 
+            border: 1px solid #444; border-radius: 8px; color: white; box-sizing: border-box;
+        }
+        .btn-primary { 
+            width: 100%; padding: 15px; background: var(--gold); color: black; 
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 16px; transition: 0.3s;
+        }
+        .btn-primary:hover { background: #d4b435; transform: translateY(-2px); }
+
+        /* SECCIÓN AUTOS */
+        .autos-section { padding: 80px 5%; text-align: center; }
+        .autos-section h2 { font-size: 2.5rem; margin-bottom: 50px; }
+        .autos-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .auto-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 15px; 
+            width: 300px; border: 1px solid #222; transition: 0.3s;
+        }
+        .auto-card:hover { border-color: var(--gold); transform: scale(1.03); }
+        .auto-card img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+        .auto-card h3 { color: var(--gold); margin: 10px 0; }
+
+        footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 12px; color: #555; }
+    </style>
+</head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <img src="images/logo-capi.png" alt="CAPI by Exprezzr">
+
+    <header>
+        <div class="logo-area">
+            <img src="images/logo-exprezzr.png" alt="Exprezzr Logo">
+            <span class="logo-text">EXPREZZR</span>
         </div>
-        
-        <div class="status-bar">
-            <span>📡 Servidor: <strong style="color: green;">Online</strong></span>
-            <span>💾 DB: <strong style="color: green;">Conectada</strong></span>
+        <nav>
+            <a href="#">Inicio</a>
+            <a href="#">Servicios</a>
+            <a href="/status" class="btn-sistema">Sistema</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-info">
+            <h1>Muévete con <br><span>ESTILO</span> y Seguridad</h1>
+            <p>La plataforma de transporte líder en Montreal. Únete a la red de Exprezzr hoy mismo.</p>
         </div>
-        
-        <form id="driverForm">
-            <div class="form-group">
-                <label>Nombre del Conductor</label>
-                <input type="text" id="nombre" placeholder="Ej: Ryan Ruffin" required>
+
+        <div class="auth-container">
+            <div class="tabs">
+                <div class="tab active">Iniciar Sesión</div>
+                <div class="tab">Registrarse</div>
             </div>
-            <div class="form-group">
-                <label>Placa del Vehículo</label>
-                <input type="text" id="placa" placeholder="ABC-1234" required>
+            <form class="auth-form">
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary">Crear Cuenta Nueva</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="autos-section">
+        <h2>Nuestros Autos</h2>
+        <div class="autos-grid">
+            <div class="auto-card">
+                <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=500&q=60" alt="Tesla Model Y">
+                <h3>Tesla Model Y</h3>
+                <p>Tecnología eléctrica de punta para un viaje silencioso y elegante.</p>
             </div>
-            <button type="submit">Registrar Conductor</button>
-        </form>
-    </div>
+            <div class="auto-card">
+                <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=500&q=60" alt="CAPI Tech">
+                <h3>CAPI Technology</h3>
+                <p>Nuestros vehículos están equipados con el sistema inteligente CAPI.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Exprezzr | Soporte: support@exprezzr.com | Región: us-central1 (Iowa)</p>
+    </footer>
+
 </body>
 </html>

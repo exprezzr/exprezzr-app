@@ -1,12 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+const path = require('path'); // <-- AGREGADO: Necesario para manejar rutas de archivos
 
 const app = express();
 
 // --- MIDDLEWARE ---
 app.use(express.json());
-app.use(express.static('public'));
+
+// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
+// Esto permite que el HTML encuentre el logo en 'public/images/logo-exprezzr.png'
+app.use(express.static(path.join(__dirname, 'public')));
+
+// REDIRECCIÓN A HTTPS (SEGURIDAD)
+app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
+        res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+        next();
+    }
+});
 
 // --- 1. CONFIGURACIÓN DE MONGODB ---
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/taxi_app_db';
@@ -26,37 +39,33 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'support@exprezzr.com',
-    pass: 'U=%N7YVAZ&bH2nK*' 
+    pass: 'U=%N7YVAZ&bH2nK*' // Asegúrate que esta sea tu "Contraseña de Aplicación"
   }
 });
-// Redirigir automáticamente de HTTP a HTTPS
-app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
-        res.redirect(`https://${req.header('host')}${req.url}`);
-    } else {
-        next();
-    }
-});
+
 // --- 3. RUTAS ---
 
+// RUTA PRINCIPAL: Envía el archivo index.html con el diseño premium
 app.get('/', (req, res) => {
-    res.send('<h1>Exprezzr Taxi App</h1><p>Dominio exprezzr.com configurado correctamente.</p>');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// RUTA DE ESTATUS: Para monitorear la salud del servidor
 app.get('/status', (req, res) => {
     res.json({
         estado: "En línea",
-        mensaje: "El motor de la aplicación de taxi está funcionando",
+        motor: "Exprezzr CAPI Engine",
         soporte: "support@exprezzr.com",
-        ubicacion: "Iowa (us-central1)", // <--- Actualizado para reflejar tu nueva región gratuita
+        ubicacion: "Iowa (us-central1)",
         timestamp: new Date().toLocaleString()
     });
 });
 
+// RUTA DE PRUEBA DE EMAIL
 app.get('/test-email', (req, res) => {
     const mailOptions = {
         from: '"Exprezzr Support" <support@exprezzr.com>',
-        to: 'ruffenryan@gmail.com', // He actualizado esto con tu correo de contacto
+        to: 'ruffenryan@gmail.com', 
         subject: 'Exprezzr Support Test',
         text: 'Hola Ryan, el sistema de correos para tu app de taxi ya funciona desde la nueva región.'
     };
@@ -73,7 +82,7 @@ app.get('/test-email', (req, res) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`------------------------------------`);
+    console.log('------------------------------------');
     console.log(`🚀 Exprezzr App activa en puerto ${PORT}`);
-    console.log(`------------------------------------`);
+    console.log('------------------------------------');
 });
