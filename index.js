@@ -29,7 +29,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'support@exprezzr.com',
-    pass: JNuj5nDXmr5M5uZ= // Generada en tu cuenta de Google Workspace
+    pass: 'JNuj5nDXmr5M5uZ=' // Generada en tu cuenta de Google Workspace
   }
 });
 
