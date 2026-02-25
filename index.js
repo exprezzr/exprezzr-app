@@ -16,7 +16,7 @@ const mongoURI = 'mongodb://localhost:27017/taxi_app_db';
 mongoose.connect(mongoURI)
   .then(() => {
     console.log('------------------------------------');
-    console.log('✅ MONGODB: Conexión establecida correctamente');
+    console.log('✅ MONGODB: Conexión establecida correctamenteeeee');
     console.log('------------------------------------');
   })
   .catch(err => {
