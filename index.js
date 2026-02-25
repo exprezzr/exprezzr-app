@@ -68,9 +68,10 @@ app.get('/test-email', (req, res) => {
     });
 });
 
-/// --- 4. ARRANQUE DEL SERVIDOR ---
+// --- 4. ARRANQUE DEL SERVIDOR (PUERTO 8080) ---
+// Es vital usar process.env.PORT para que Google Cloud Run no falle
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, '0.0.0.0', () => { // Añadimos '0.0.0.0' para Cloud Run
+app.listen(PORT, () => {
     console.log(`------------------------------------`);
     console.log(`🚀 Taxi App activa en puerto ${PORT}`);
     console.log(`------------------------------------`);
