@@ -1,25 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
 const app = express();
 const port = 3000;
 
-// Middleware para entender JSON (importante para recibir datos de la app)
+// MIDDLEWARE: Para que el servidor pueda leer JSON
 app.use(express.json());
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static('public'));
 
-// CONFIGURACIÓN DE MONGODB
-// Cambia 'taxi_app_db' por el nombre que quieras para tu base de datos
+// CONEXIÓN A MONGODB
+// taxi_app_db es el nombre de tu base de datos local
 const mongoURI = 'mongodb://localhost:27017/taxi_app_db';
 
 mongoose.connect(mongoURI)
-  .then(() => console.log('✅ Conectado a MongoDB: taxi_app_db'))
-  .catch(err => console.error('❌ Error de conexión:', err));
+  .then(() => {
+    console.log('------------------------------------');
+    console.log('✅ MONGODB: Conexión establecida correctamente');
+    console.log('------------------------------------');
+  })
+  .catch(err => {
+    console.error('❌ MONGODB: Error de conexión:', err);
+  });
 
-// RUTA DE PRUEBA
-app.get('/', (req, res) => {
-  res.send('🚕 TAXI-APP-NODE: Servidor en línea');
-});
-
-// INICIAR SERVIDOR
+// INICIO DEL SERVIDOR
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
+  console.log('Presiona Ctrl+C para detenerlo');
 });
