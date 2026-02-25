@@ -23,9 +23,18 @@ mongoose.connect(mongoURI)
     console.error('❌ MONGODB: Error de conexión:', err);
   });
 
-// Usa el puerto que Google Cloud le asigne, o el 8080 por defecto
-const PORT = process.env.PORT || 8080;
+// Ruta de prueba para confirmar que la app de taxi está en el aire
+app.get('/status', (req, res) => {
+    res.json({
+        estado: "En línea",
+        mensaje: "El motor de la aplicación de taxi está funcionando",
+        ubicacion: "Montreal (Nube)",
+        timestamp: new Date().toLocaleString()
+    });
+});
 
+// IMPORTANTE: Asegúrate de que el puerto sea el 8080 para Cloud Run
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Servidor de taxi corriendo en el puerto ${PORT}`);
+    console.log(`Taxi App escuchando en puerto ${PORT}`);
 });
