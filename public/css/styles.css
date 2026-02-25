@@ -2,79 +2,72 @@
 
 body { margin: 0; background-color: var(--black); color: var(--text); font-family: 'Inter', sans-serif; }
 
-/* ... el resto de tu código CSS ... */
+/* NAVBAR */
+header { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 10px 5%; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--gold);
+    position: sticky; top: 0; z-index: 1000;
+}
+.logo-area { display: flex; align-items: center; }
+.logo-area img { height: 60px; margin-right: 15px; }
+.logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 22px; color: var(--gold); letter-spacing: 2px; }
 
-        :root { --gold: #f4d03f; --black: #0b0b0b; --card-bg: rgba(21, 21, 21, 0.85); --text: #ffffff; }
-        
-        body { margin: 0; background-color: var(--black); color: var(--text); font-family: 'Inter', sans-serif; }
-        
-        /* NAVBAR */
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 5%; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--gold);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo-area { display: flex; align-items: center; }
-        /* Usamos tu logo transparente oficial */
-        .logo-area img { height: 60px; margin-right: 15px; }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 22px; color: var(--gold); letter-spacing: 2px; }
-        
-        nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
-        nav a:hover { color: var(--gold); }
-        .btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
+nav a:hover { color: var(--gold); }
+.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
 
-        /* HERO SECTION CON IMAGEN DE FONDO */
-        .hero { 
-            display: flex; align-items: center; justify-content: space-around; 
-            padding: 100px 5%; min-height: 80vh; flex-wrap: wrap;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-                        url('images/hero-bg.jpg'); 
-            background-size: cover; 
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .hero-info { max-width: 550px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-        .hero-info h1 { font-size: 3.8rem; margin: 0; line-height: 1.1; font-family: 'Orbitron', sans-serif; }
-        .hero-info h1 span { color: var(--gold); }
-        .hero-info p { font-size: 1.3rem; opacity: 0.9; margin-top: 25px; font-weight: 300; }
+/* HERO SECTION - Nota el ../ para salir de la carpeta css */
+.hero { 
+    display: flex; align-items: center; justify-content: space-around; 
+    padding: 100px 5%; min-height: 80vh; flex-wrap: wrap;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                url('../images/hero-bg.jpg'); 
+    background-size: cover; 
+    background-position: center;
+    background-attachment: fixed;
+}
+.hero-info { max-width: 550px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+.hero-info h1 { font-size: 3.8rem; margin: 0; line-height: 1.1; font-family: 'Orbitron', sans-serif; }
+.hero-info h1 span { color: var(--gold); }
+.hero-info p { font-size: 1.3rem; opacity: 0.9; margin-top: 25px; font-weight: 300; }
 
-        /* FORMULARIO CON EFECTO CRISTAL */
-        .auth-container { 
-            background: var(--card-bg); 
-            padding: 40px; border-radius: 24px; 
-            width: 100%; max-width: 400px; 
-            border: 1px solid rgba(244, 208, 63, 0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px); /* Desenfoque de fondo */
-        }
-        .tabs { display: flex; margin-bottom: 30px; border-bottom: 1px solid #333; }
-        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888; font-weight: bold; transition: 0.3s; }
-        .tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
+/* FORMULARIO CON EFECTO CRISTAL */
+.auth-container { 
+    background: var(--card-bg); 
+    padding: 40px; border-radius: 24px; 
+    width: 100%; max-width: 400px; 
+    border: 1px solid rgba(244, 208, 63, 0.3);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+}
+.tabs { display: flex; margin-bottom: 30px; border-bottom: 1px solid #333; }
+.tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888; font-weight: bold; transition: 0.3s; }
+.tab.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
 
-        .auth-form input { 
-            width: 100%; padding: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.05); 
-            border: 1px solid #444; border-radius: 12px; color: white; box-sizing: border-box;
-            outline: none; transition: 0.3s;
-        }
-        .auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
-        
-        .btn-primary { 
-            width: 100%; padding: 16px; background: var(--gold); color: black; 
-            border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
-            font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
-        }
-        .btn-primary:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(244, 208, 63, 0.4); }
+.auth-form input { 
+    width: 100%; padding: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.05); 
+    border: 1px solid #444; border-radius: 12px; color: white; box-sizing: border-box;
+    outline: none; transition: 0.3s;
+}
+.auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
 
-        /* SECCIÓN AUTOS */
-        .autos-section { padding: 80px 5%; text-align: center; background: #050505; }
-        .autos-section h2 { font-size: 2.5rem; margin-bottom: 50px; font-family: 'Orbitron', sans-serif; }
-        .autos-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-        .auto-card { 
-            background: #111; padding: 25px; border-radius: 20px; 
-            width: 320px; border: 1px solid #222; transition: 0.4s;
-        }
-        .auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-        .auto-card img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
-        .auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.5rem; }
+.btn-primary { 
+    width: 100%; padding: 16px; background: var(--gold); color: black; 
+    border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+    font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+}
+.btn-primary:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(244, 208, 63, 0.4); }
 
-        footer { padding: 50px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
+/* SECCIÓN AUTOS */
+.autos-section { padding: 80px 5%; text-align: center; background: #050505; }
+.autos-section h2 { font-size: 2.5rem; margin-bottom: 50px; font-family: 'Orbitron', sans-serif; }
+.autos-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.auto-card { 
+    background: #111; padding: 25px; border-radius: 20px; 
+    width: 320px; border: 1px solid #222; transition: 0.4s;
+}
+.auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
+.auto-card img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
+.auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.5rem; }
+
+footer { padding: 50px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
