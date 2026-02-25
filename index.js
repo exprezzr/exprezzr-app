@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const { Client } = require("@googlemaps/google-maps-services-js");
 const mongoose = require('mongoose');
+const Usuario = require('./models/Usuario'); // Añade esta línea cerca de la línea 6
 const Viaje = require('./models/Viaje');
 const path = require('path');
 const rutasPasajeros = require('./routes/pasajeros');
@@ -65,7 +66,7 @@ app.get('/api/viajes/pendientes', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener viajes' });
     }
-});
+}); // <--- Verifica que este cierre esté así
 
 // 4. Aceptar un viaje (Cambia el estado)
 app.post('/api/viajes/aceptar/:id', async (req, res) => {
@@ -79,18 +80,22 @@ app.post('/api/viajes/aceptar/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'No se pudo aceptar el viaje' });
     }
+}); // <--- Este cierra la ruta 4// --- REGISTRO Y ENCENDIDO ---
+
+// Ruta para registrar nuevos usuarios en MongoDB
+app.post('/api/usuarios/registro', async (req, res) => {
+    try {
+        const nuevoUsuario = new Usuario(req.body);
+        await nuevoUsuario.save();
+        res.status(201).json({ mensaje: 'Usuario creado con éxito' });
+    } catch (error) {
+        res.status(500).json({ error: 'No se pudo crear el usuario' });
+    }
 });
 
-// 5. Ruta segura para el Mapa (Para no exponer tu API KEY en el HTML)
-app.get('/api/viaje/mapa/:destino', (req, res) => {
-    const destino = encodeURIComponent(req.params.destino);
-    // Nota: Usamos una URL de embed estándar o estática
-    const mapaUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.GOOGLE_MAPS_API_KEY}&q=${destino}`;
-    res.json({ url: mapaUrl });
-});
+// El servidor usará el puerto que le asigne la nube o el 3000 por defecto
+const PORT = process.env.PORT || 3000;
 
-// --- ENCENDIDO DEL SERVIDOR ---
-const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`✅ Servidor de MI-TAXI-APP corriendo en http://localhost:${PORT}`);
+    console.log(`✅ Exprezzr corriendo en el puerto ${PORT}`);
 });
