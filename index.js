@@ -23,9 +23,9 @@ mongoose.connect(mongoURI)
     console.error('❌ MONGODB: Error de conexión:', err);
   });
 
-// Este bloque debe ir al final de index.js
-const PORT = 3000;
+// Usa el puerto que Google Cloud le asigne, o el 8080 por defecto
+const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor en vivo: http://localhost:${PORT}`);
-    console.log('👀 Monitoreando cambios en el código...');
+    console.log(`Servidor de taxi corriendo en el puerto ${PORT}`);
 });
