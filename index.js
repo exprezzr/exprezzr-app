@@ -29,7 +29,14 @@ const transporter = nodemailer.createTransport({
     pass: 'U=%N7YVAZ&bH2nK*' 
   }
 });
-
+// Redirigir automáticamente de HTTP a HTTPS
+app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
+        res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+        next();
+    }
+});
 // --- 3. RUTAS ---
 
 app.get('/', (req, res) => {
