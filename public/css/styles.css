@@ -97,15 +97,12 @@ nav a:hover { color: var(--gold); }
 
 footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
 /* BOOKING & MAP SECTION */
-.booking-section { padding: 60px 5%; background: #0b0b0b; display: flex; justify-content: center; }
-.booking-container { display: flex; flex-wrap: wrap; max-width: 1200px; width: 100%; background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #333; }
-.booking-form { flex: 1; padding: 30px; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-.booking-form h2 { color: var(--gold); margin-top: 0; font-family: 'Orbitron', sans-serif; }
-.input-group { display: flex; gap: 10px; }
+.booking-section { padding: 35px 5%; background: #0b0b0b; display: flex; justify-content: center; }.booking-container { display: flex; flex-wrap: wrap; max-width: 1400px; width: 95%; background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #333; }
+.booking-form { flex: 1; padding: 25px 40px; min-width: 450px; display: flex; flex-direction: column; gap: 15px; }.input-group { display: flex; gap: 10px; }
 .input-group input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #000; color: white; outline: none; font-family: 'Inter', sans-serif;}
 .input-group input:focus { border-color: var(--gold); }
 .btn-locate { background: var(--gold); border: none; border-radius: 8px; cursor: pointer; padding: 0 15px; font-size: 1.2rem; transition: 0.3s;}
 .btn-locate:hover { background: #fff; }
 .price-result { margin-top: 15px; font-size: 1.1rem; font-weight: bold; color: #fff; text-align: center; display: none; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;}
 .price-result span { color: var(--gold); font-size: 1.8rem; display: block; margin-top: 5px; font-family: 'Orbitron', sans-serif;}
-.map-container { flex: 1; min-width: 300px; min-height: 450px; background: #222; z-index: 1; }
+.map-container { flex: 1.5; min-width: 400px; min-height: 380px; background: #222; z-index: 1; }
