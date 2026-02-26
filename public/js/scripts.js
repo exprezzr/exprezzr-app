@@ -4,7 +4,8 @@ let index = 0;
 
 function rotateCars() {
     index++;
-    if (index > 6) index = 0;
+    // Cambiamos el límite de 6 a 5 porque ahora hay 9 autos en la flota
+    if (index > 5) index = 0;
     const movePercentage = index * 25; 
     if (slider) slider.style.transform = `translateX(-${movePercentage}%)`;
 }
