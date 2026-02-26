@@ -1,50 +1,97 @@
-require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
+require('dotenv').config(); // <-- AGREGADO: Carga las variables de seguridad de tu archivo .env
+const password = process.env.MI_CONTRASENA_SECRETA;
+const mailer = require('./email/mailer');
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
+const nodemailer = require('nodemailer');
 const path = require('path');
 
-const User = require('./models/User');
-const Driver = require('./models/Driver');
-
-dotenv.config();
 const app = express();
 
-app.use(cors());
+// --- MIDDLEWARE ---
 app.use(express.json());
+
+// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
 app.use(express.static(path.join(__dirname, 'public')));
 
-// SINGLE Connection Block
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('--- EXPREZZR DATABASE CONNECTED SUCCESSFULLY ---'))
-    .catch(err => console.error('Database connection error:', err.message));
-
-app.post('/api/register', async (req, res) => {
-    const { email, password, role, licenseNumber } = req.body;
-
-    try {
-        if (role === 'driver') {
-            const newDriver = new Driver({ 
-                email, 
-                password, 
-                license: licenseNumber, 
-                auto: "Tesla Model Y" 
-            });
-            await newDriver.save();
-            return res.status(201).json({ message: 'Welcome to the Exprezzr Fleet! Driver registered.' });
-        } else {
-            const newUser = new User({ email, password });
-            await newUser.save();
-            return res.status(201).json({ message: 'Passenger account created successfully!' });
-        }
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'This email is already in our system.' });
-        }
-        res.status(500).json({ error: 'Internal Server Error' });
+// REDIRECCIÓN A HTTPS (SEGURIDAD)
+app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
+        res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+        next();
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Exprezzr Server active on Port ${PORT}`));
+// --- 1. CONFIGURACIÓN DE MONGODB ---
+// Ahora toma el enlace seguro directamente de tu archivo .env
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/taxi_app_db';
+
+mongoose.connect(mongoURI)
+  .then(() => {
+    console.log('------------------------------------');
+    console.log('✅ MONGODB: Conexión establecida');
+    console.log('------------------------------------');
+  })
+  .catch(err => {
+    console.error('❌ MONGODB: Error de conexión:', err);
+  });
+
+// --- 2. CONFIGURACIÓN DE NODEMAILER (SUPPORT EMAIL) ---
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'support@exprezzr.com',
+    pass: process.env.EMAIL_PASS // <-- MODIFICADO: Contraseña oculta y segura
+  }
+});
+
+// --- 3. RUTAS ---
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/status', (req, res) => {
+    res.json({
+        estado: "En línea",
+        motor: "Exprezzr CAPI Engine",
+        soporte: "support@exprezzr.com",
+        ubicacion: "Iowa (us-central1)",
+        timestamp: new Date().toLocaleString()
+    });
+});
+
+app.get('/test-email', (req, res) => {
+    const mailOptions = {
+        from: '"Exprezzr Support" <support@exprezzr.com>',
+        to: 'ruffenryan@gmail.com', 
+        subject: 'Exprezzr Support Test',
+        text: 'Hola Ryan, el sistema de correos para tu app de taxi ya funciona desde la nueva región y con credenciales seguras.'
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return res.status(500).json({ enviado: false, error: error.message });
+        }
+        res.json({ enviado: true, respuesta: info.response });
+    });
+});
+
+// --- 4. ARRANQUE DEL SERVIDOR ---
+// Ahora tomará el puerto 3000 de tu archivo .env
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('------------------------------------');
+    console.log(`🚀 Exprezzr App activa en puerto ${PORT}`);
+    console.log('------------------------------------');
+
+// Importamos la función que acabamos de crear
+const { enviarBienvenida } = require('./email/mailer');
+
+// Llamada de prueba (puedes poner tu propio correo aquí para probar)
+enviarBienvenida('ryanruffen@gmail.com');
+
+});
+
