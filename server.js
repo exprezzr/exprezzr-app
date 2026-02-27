@@ -1,20 +1,17 @@
-require('dotenv').config(); // <-- AGREGADO: Carga las variables de seguridad de tu archivo .env
-const password = process.env.MI_CONTRASENA_SECRETA;
-const mailer = require('./email/mailer');
+require('dotenv').config(); 
 const express = require('express');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const path = require('path');
+const { enviarBienvenida } = require('./email/mailer');
 
 const app = express();
 
 // --- MIDDLEWARE ---
 app.use(express.json());
-
-// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
 app.use(express.static(path.join(__dirname, 'public')));
 
-// REDIRECCIÓN A HTTPS (SEGURIDAD)
+// REDIRECCIÓN A HTTPS (Solo en producción)
 app.use((req, res, next) => {
     if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
         res.redirect(`https://${req.header('host')}${req.url}`);
@@ -24,7 +21,6 @@ app.use((req, res, next) => {
 });
 
 // --- 1. CONFIGURACIÓN DE MONGODB ---
-// Ahora toma el enlace seguro directamente de tu archivo .env
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/taxi_app_db';
 
 mongoose.connect(mongoURI)
@@ -37,37 +33,48 @@ mongoose.connect(mongoURI)
     console.error('❌ MONGODB: Error de conexión:', err);
   });
 
-// --- 2. CONFIGURACIÓN DE NODEMAILER (SUPPORT EMAIL) ---
+// --- 2. CONFIGURACIÓN DE NODEMAILER (Variables desde .env) ---
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'ryanruffen@gmail.com',
-    pass: process.env.EMAIL_PASS // <-- MODIFICADO: Contraseña oculta y segura
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS  
+  }
+});
+
+// VERIFICACIÓN DE CONEXIÓN DE EMAIL
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('❌ EMAIL: Error de configuración:', error);
+  } else {
+    console.log('✅ EMAIL: Servidor listo para enviar correos');
   }
 });
 
 // --- 3. RUTAS ---
 
+// Ruta Principal (Carga tu carrusel de 9 autos)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Estado del Servidor
 app.get('/status', (req, res) => {
     res.json({
         estado: "En línea",
         motor: "Exprezzr CAPI Engine",
-        soporte: "support@exprezzr.com",
-        ubicacion: "Iowa (us-central1)",
+        soporte: process.env.EMAIL_USER,
         timestamp: new Date().toLocaleString()
     });
 });
 
+// Ruta de prueba de Email
 app.get('/test-email', (req, res) => {
     const mailOptions = {
-        from: '"Exprezzr Support" <support@exprezzr.com>',
+        from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
         to: 'ruffenryan@gmail.com', 
         subject: 'Exprezzr Support Test',
-        text: 'Hola Ryan, el sistema de correos para tu app de taxi ya funciona desde la nueva región y con credenciales seguras.'
+        text: 'Hola Ryan, el sistema ya usa EMAIL_USER y EMAIL_PASS desde el .env'
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -79,31 +86,15 @@ app.get('/test-email', (req, res) => {
 });
 
 // --- 4. ARRANQUE DEL SERVIDOR ---
-// Esto intenta usar el puerto del .env, si no, usa el 8080, y si no, busca uno libre.
 const PORT = process.env.PORT || 8080;
 
-server.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.log(`⚠️ El puerto ${PORT} está ocupado, intentando con otro...`);
-        server.listen(0); // Esto asigna un puerto libre automáticamente
-    }
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('------------------------------------');
+    console.log(`🚀 Exprezzr App activa en puerto ${PORT}`);
+    console.log('------------------------------------');
 
-
-    // La llamada de prueba debe ir aquí, después de que el servidor se inicia correctamente.
-    const { enviarBienvenida } = require('./email/mailer');
-    enviarBienvenida('ryanruffen@gmail.com');
-});
-
-server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`❌ ERROR: El puerto ${PORT} ya está en uso.`);
-        console.error('Por favor, detén el proceso que usa este puerto o define un puerto diferente en un archivo .env.');
-        process.exit(1); // Salir del proceso con un código de error
-    } else {
-        console.error('❌ Ha ocurrido un error al iniciar el servidor:', err);
-        process.exit(1);
+    // Prueba automática al arrancar
+    if (process.env.EMAIL_USER) {
+        enviarBienvenida(process.env.EMAIL_USER);
     }
 });
-
