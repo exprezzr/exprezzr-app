@@ -41,7 +41,7 @@ mongoose.connect(mongoURI)
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'support@exprezzr.com',
+    user: 'ryanruffen@gmail.com',
     pass: process.env.EMAIL_PASS // <-- MODIFICADO: Contraseña oculta y segura
   }
 });
@@ -79,19 +79,31 @@ app.get('/test-email', (req, res) => {
 });
 
 // --- 4. ARRANQUE DEL SERVIDOR ---
-// Ahora tomará el puerto 3000 de tu archivo .env
+// Esto intenta usar el puerto del .env, si no, usa el 8080, y si no, busca uno libre.
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log('------------------------------------');
-    console.log(`🚀 Exprezzr App activa en puerto ${PORT}`);
-    console.log('------------------------------------');
+server.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.log(`⚠️ El puerto ${PORT} está ocupado, intentando con otro...`);
+        server.listen(0); // Esto asigna un puerto libre automáticamente
+    }
 
-// Importamos la función que acabamos de crear
-const { enviarBienvenida } = require('./email/mailer');
 
-// Llamada de prueba (puedes poner tu propio correo aquí para probar)
-enviarBienvenida('ryanruffen@gmail.com');
+    // La llamada de prueba debe ir aquí, después de que el servidor se inicia correctamente.
+    const { enviarBienvenida } = require('./email/mailer');
+    enviarBienvenida('ryanruffen@gmail.com');
+});
 
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`❌ ERROR: El puerto ${PORT} ya está en uso.`);
+        console.error('Por favor, detén el proceso que usa este puerto o define un puerto diferente en un archivo .env.');
+        process.exit(1); // Salir del proceso con un código de error
+    } else {
+        console.error('❌ Ha ocurrido un error al iniciar el servidor:', err);
+        process.exit(1);
+    }
 });
 
