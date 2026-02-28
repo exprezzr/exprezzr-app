@@ -5,121 +5,94 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const bcrypt = require('bcrypt'); 
 const { OAuth2Client } = require('google-auth-library'); 
-const { enviarBienvenida } = require('./email/mailer');
 
-// --- 1. MODELO DE USUARIO ACTUALIZADO ---
-// Ahora incluye firstName, lastName y phone para CAPI
+const app = express();
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// --- 1. MODELO DE USUARIO ---
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String }, 
+    phone: { type: String, default: 'Pending' }, 
     password: { type: String, required: true },
     imagen: { type: String },
     fechaRegistro: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', userSchema);
 
-const app = express();
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-// --- MIDDLEWARE ---
+// --- 2. MIDDLEWARE ---
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// REDIRECCIÓN A HTTPS (Producción)
-app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
-        res.redirect(`https://${req.header('host')}${req.url}`);
-    } else {
-        next();
-    }
-});
-
-// --- 2. CONEXIÓN MONGODB ATLAS ---
-const mongoURI = process.env.MONGO_URI;
-
-mongoose.connect(mongoURI)
-  .then(() => {
-    console.log('------------------------------------');
-    console.log('✅ MONGODB: Connected to Atlas');
-    console.log('------------------------------------');
-  })
+// --- 3. CONEXIÓN MONGODB ATLAS ---
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MONGODB: Connected to Atlas'))
   .catch(err => console.error('❌ MONGODB Error:', err));
 
-// --- 3. CONFIGURACIÓN DE NODEMAILER ---
+// --- 4. CONFIGURACIÓN DE CORREO (support@exprezzr.com) ---
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
-  secure: true, // true para puerto 465
+  secure: true, 
   auth: {
-    user: process.env.EMAIL_USER, // Esto leerá support@exprezzr.com de tu .env
-    pass: process.env.EMAIL_PASS  // Tu App Password
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS  
   }
 });
 
-// --- 4. RUTAS DE AUTENTICACIÓN ---
+// --- 5. RUTAS DE AUTENTICACIÓN ---
 
-// Ver página de Sign Up
-app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
-});
-
-// REGISTRO MANUAL CON ENVÍO DE EMAIL
+// REGISTRO MANUAL (Lógica integrada por Gemini)
 app.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, phone, password } = req.body;
-        
-        // 1. Verificar si el usuario ya existe
-        const existe = await User.findOne({ email });
-        if (existe) return res.status(400).json({ error: "Email already in use." });
 
-        // 2. Encriptar contraseña
+        // Verificar si el usuario ya existe
+        const existe = await User.findOne({ email });
+        if (existe) {
+            return res.status(400).json({ error: "Email already in use." });
+        }
+
+        // Encriptar contraseña
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // 3. Guardar en MongoDB Atlas
+        // Guardar en MongoDB
         const newUser = new User({ 
             firstName, 
             lastName, 
             email, 
-            phone,
+            phone, 
             password: hashedPassword 
         });
         await newUser.save();
 
-        // 4. ENVIAR CORREO DE BIENVENIDA (support@exprezzr.com)
+        // Enviar Email de Bienvenida
         const mailOptions = {
             from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: 'Welcome to CAPI by Exprezzr!',
             html: `
-                <div style="font-family: Arial, sans-serif; background-color: #000; color: #fff; padding: 40px; text-align: center; border: 2px solid #f4d03f;">
-                    <h1 style="color: #f4d03f; font-family: 'Orbitron', sans-serif;">WELCOME TO CAPI</h1>
-                    <p style="font-size: 1.1rem;">Hello ${firstName},</p>
-                    <p>Thank you for choosing Exprezzr. Your account is now active.</p>
-                    <p>Experience the most exclusive transportation in Shrewsbury and Boston.</p>
-                    <br>
-                    <a href="http://localhost:3000" style="background-color: #f4d03f; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">BOOK YOUR FIRST RIDE</a>
-                    <p style="margin-top: 30px; font-size: 0.8rem; color: #777;">&copy; 2026 Exprezzr LLC. All rights reserved.</p>
-                </div>
-            `
+                <div style="background-color: #000; color: #fff; padding: 40px; text-align: center; border: 2px solid #f4d03f; font-family: Arial;">
+                    <h1 style="color: #f4d03f;">WELCOME TO CAPI</h1>
+                    <p>Hello ${firstName}, your executive account is now active.</p>
+                    <p>Experience premium transportation in Shrewsbury and Boston.</p>
+                </div>`
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log("❌ Email Error:", error);
-            else console.log("📧 Welcome email sent to:", email);
-        });
+        transporter.sendMail(mailOptions).catch(err => console.log("📧 Mail error:", err));
 
-        res.status(201).json({ message: "Account created and welcome email sent!" });
+        // Respuesta JSON (Evita pantalla blanca)
+        return res.status(201).json({ message: "Account created successfully!" });
 
     } catch (err) {
-        console.error("Registration error:", err);
-        res.status(500).json({ error: "Server error during registration" });
+        console.error("❌ Register Error:", err);
+        return res.status(500).json({ error: "Internal server error during registration" });
     }
 });
 
-// Registro/Login con Google (Ruta Actualizada)
+// Autenticación con Google
 app.post('/auth/google', async (req, res) => {
     const { token } = req.body;
     try {
@@ -128,70 +101,60 @@ app.post('/auth/google', async (req, res) => {
             audience: process.env.GOOGLE_CLIENT_ID,
         });
         
-        // Google nos da given_name (First) y family_name (Last)
         const { given_name, family_name, email, picture } = ticket.getPayload();
-
         let user = await User.findOne({ email });
         
         if (!user) {
-            // Si es nuevo, creamos el perfil con datos de Google
             user = new User({
                 firstName: given_name,
                 lastName: family_name,
                 email: email,
                 password: 'google-authenticated-user', 
                 imagen: picture,
-                phone: 'Not provided' // El teléfono se puede pedir después
+                phone: 'Pending'
             });
             await user.save();
         }
-        
-        res.json({ message: "Google Auth Success", user });
+        res.json({ message: "Success", user });
     } catch (error) {
-        console.error("Google Auth Error:", error);
-        res.status(400).json({ error: "Invalid Google Token" });
+        res.status(400).json({ error: "Invalid Token" });
     }
 });
 
-// ======================================================
-// PEGA EL NUEVO CÓDIGO AQUÍ (Línea aprox. 120)
-// ======================================================
+// Actualizar Teléfono
 app.post('/update-phone', async (req, res) => {
     const { email, phone } = req.body;
     try {
-        const user = await User.findOneAndUpdate(
-            { email: email }, 
-            { phone: phone }, 
-            { new: true }
-        );
+        const user = await User.findOneAndUpdate({ email }, { phone }, { new: true });
         if (user) {
             res.status(200).json({ message: "Phone updated", user });
         } else {
             res.status(404).json({ error: "User not found" });
         }
     } catch (error) {
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Error updating phone" });
     }
 });
 
-// --- 5. OTRAS RUTAS ---
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// --- 6. RUTAS DE PÁGINAS ---
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
 app.get('/status', (req, res) => {
     res.json({
         status: "Online",
         engine: "Exprezzr CAPI Engine",
-        support_email: process.env.EMAIL_USER, // Esto mostrará support@exprezzr.com
-        timestamp: new Date().toLocaleString()
+        support: process.env.EMAIL_USER
     });
 });
 
-// --- 6. ARRANQUE ---
-const PORT = process.env.PORT || 8080;
+// --- 7. ARRANQUE ---
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log('------------------------------------');
-    console.log(`🚀 CAPI Server active on port ${PORT}`);
-    console.log('------------------------------------');
+    console.log('====================================');
+    console.log(`🚀 CAPI SERVER ACTIVE: PORT ${PORT}`);
+    console.log(`📧 SUPPORT EMAIL: ${process.env.EMAIL_USER}`);
+    console.log('====================================');
 });
