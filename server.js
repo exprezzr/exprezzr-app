@@ -9,7 +9,16 @@ const { OAuth2Client } = require('google-auth-library');
 const app = express();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// --- 1. MODELO DE USUARIO ---
+// --- 1. MIDDLEWARE ---
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- 2. CONEXIÓN MONGODB ATLAS ---
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MONGODB: Connected to Atlas'))
+  .catch(err => console.error('❌ MONGODB Error:', err));
+
+// --- 3. MODELO DE USUARIO ---
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -20,15 +29,6 @@ const userSchema = new mongoose.Schema({
     fechaRegistro: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', userSchema);
-
-// --- 2. MIDDLEWARE ---
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// --- 3. CONEXIÓN MONGODB ATLAS ---
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MONGODB: Connected to Atlas'))
-  .catch(err => console.error('❌ MONGODB Error:', err));
 
 // --- 4. CONFIGURACIÓN DE CORREO (support@exprezzr.com) ---
 const transporter = nodemailer.createTransport({
@@ -43,59 +43,53 @@ const transporter = nodemailer.createTransport({
 
 // --- 5. RUTAS DE AUTENTICACIÓN ---
 
-// REGISTRO MANUAL (Lógica integrada por Gemini)
+// Registro Manual (CORREGIDO PARA EVITAR PANTALLA BLANCA)
 app.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, phone, password } = req.body;
 
-        // Verificar si el usuario ya existe
-        const existe = await User.findOne({ email });
-        if (existe) {
-            return res.status(400).json({ error: "Email already in use." });
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ error: "Email already registered" });
         }
 
-        // Encriptar contraseña
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Guardar en MongoDB
-        const newUser = new User({ 
-            firstName, 
-            lastName, 
-            email, 
-            phone, 
-            password: hashedPassword 
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            phone,
+            password: hashedPassword
         });
+
         await newUser.save();
 
-        // Enviar Email de Bienvenida
+        // Enviar Email (en segundo plano)
         const mailOptions = {
             from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: 'Welcome to CAPI by Exprezzr!',
-            html: `
-                <div style="background-color: #000; color: #fff; padding: 40px; text-align: center; border: 2px solid #f4d03f; font-family: Arial;">
-                    <h1 style="color: #f4d03f;">WELCOME TO CAPI</h1>
-                    <p>Hello ${firstName}, your executive account is now active.</p>
-                    <p>Experience premium transportation in Shrewsbury and Boston.</p>
-                </div>`
+            html: `<div style="background:#000;color:#fff;padding:20px;text-align:center;border:2px solid #f4d03f;">
+                   <h1 style="color:#f4d03f;">WELCOME TO CAPI</h1>
+                   <p>Experience the best luxury transportation.</p></div>`
         };
+        transporter.sendMail(mailOptions).catch(e => console.log("Email error:", e));
 
-        transporter.sendMail(mailOptions).catch(err => console.log("📧 Mail error:", err));
-
-        // Respuesta JSON (Evita pantalla blanca)
+        // RESPUESTA JSON OBLIGATORIA
         return res.status(201).json({ message: "Account created successfully!" });
 
     } catch (err) {
         console.error("❌ Register Error:", err);
-        return res.status(500).json({ error: "Internal server error during registration" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 });
 
 // Autenticación con Google
 app.post('/auth/google', async (req, res) => {
-    const { token } = req.body;
     try {
+        const { token } = req.body;
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID,
@@ -109,7 +103,7 @@ app.post('/auth/google', async (req, res) => {
                 firstName: given_name,
                 lastName: family_name,
                 email: email,
-                password: 'google-authenticated-user', 
+                password: 'google-authenticated-user-' + Math.random(), 
                 imagen: picture,
                 phone: 'Pending'
             });
@@ -126,11 +120,8 @@ app.post('/update-phone', async (req, res) => {
     const { email, phone } = req.body;
     try {
         const user = await User.findOneAndUpdate({ email }, { phone }, { new: true });
-        if (user) {
-            res.status(200).json({ message: "Phone updated", user });
-        } else {
-            res.status(404).json({ error: "User not found" });
-        }
+        if (user) res.status(200).json({ message: "Phone updated", user });
+        else res.status(404).json({ error: "User not found" });
     } catch (error) {
         res.status(500).json({ error: "Error updating phone" });
     }
@@ -142,19 +133,8 @@ app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'si
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 
-app.get('/status', (req, res) => {
-    res.json({
-        status: "Online",
-        engine: "Exprezzr CAPI Engine",
-        support: process.env.EMAIL_USER
-    });
-});
-
 // --- 7. ARRANQUE ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log('====================================');
     console.log(`🚀 CAPI SERVER ACTIVE: PORT ${PORT}`);
-    console.log(`📧 SUPPORT EMAIL: ${process.env.EMAIL_USER}`);
-    console.log('====================================');
 });
