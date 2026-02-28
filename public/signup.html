@@ -2,9 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>Sign Up - CAPI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sign Up - CAPI by Exprezzr</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        /* REFUERZO DE DISEÑO PARA MÓVILES (Pégalo aquí o en styles.css) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
+            display: none; /* Se activa con JS */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex !important;
+        }
+        .modal-card {
+            background: #111;
+            border: 2px solid #f4d03f;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 0 30px rgba(244, 208, 63, 0.3);
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 480px) {
+            .form-row { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
     <div class="signup-page">
@@ -43,18 +79,20 @@
         <span id="toastMessage"></span>
     </div>
 
-    <div id="phoneModal" class="modal-overlay" style="display: none;">
+    <div id="phoneModal" class="modal-overlay">
         <div class="modal-card">
-            <h2>One last step!</h2>
-            <p>Please provide your phone number to complete your profile.</p>
-            <input type="tel" id="modalPhone" placeholder="(508) 000-0000">
-            <button id="savePhoneBtn" class="btn-primary-signup">COMPLETE REGISTRATION</button>
+            <h2 style="color: #f4d03f;">One last step!</h2>
+            <p style="color: #ccc;">Please provide your phone number to complete your profile.</p>
+            <input type="tel" id="modalPhone" placeholder="(508) 000-0000" 
+                   style="width: 100%; padding: 12px; margin: 15px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px;">
+            <button id="savePhoneBtn" class="btn-primary-signup" style="width: 100%;">COMPLETE REGISTRATION</button>
         </div>
     </div>
 
     <script>
         let tempUser = null;
 
+        // Función para mostrar alertas doradas
         function showCapiToast(msg, isError = false) {
             const toast = document.getElementById('capiToast');
             const message = document.getElementById('toastMessage');
@@ -63,7 +101,7 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        // Registro Manual
+        // 1. EVENTO: Registro Manual
         document.getElementById('signupForm').addEventListener('submit', async () => {
             const userData = {
                 firstName: document.getElementById('firstName').value,
@@ -85,53 +123,73 @@
                     showCapiToast("Account created successfully!");
                     setTimeout(() => window.location.href = '/login', 2500);
                 } else {
-                    showCapiToast(data.error, true);
+                    showCapiToast(data.error || "Error", true);
                 }
             } catch (err) {
-                showCapiToast("Server error", true);
+                showCapiToast("Server connection error", true);
             }
         });
 
-        // Google Auth
-        function handleCredentialResponse(response) {
-// Función para guardar el teléfono después de entrar con Google
-document.getElementById('savePhoneBtn').addEventListener('click', async () => {
-    const phone = document.getElementById('modalPhone').value;
-    if (!phone) return showCapiToast("Please enter your phone number", true);
+        // 2. EVENTO: Botón del Modal (Independiente)
+        document.getElementById('savePhoneBtn').addEventListener('click', async () => {
+            const phoneValue = document.getElementById('modalPhone').value;
+            if (!phoneValue) return showCapiToast("Please enter your phone number", true);
 
-    try {
-        const res = await fetch('/update-phone', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email: tempUser.email, phone: phone })
+            try {
+                const res = await fetch('/update-phone', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        email: tempUser.email, 
+                        phone: phoneValue 
+                    })
+                });
+
+                if (res.ok) {
+                    showCapiToast("Profile complete! Welcome to Exprezzr.");
+                    setTimeout(() => window.location.href = '/dashboard', 2000);
+                } else {
+                    showCapiToast("Error updating profile", true);
+                }
+            } catch (err) {
+                showCapiToast("Server error saving phone", true);
+            }
         });
 
-        if (res.ok) {
-            showCapiToast("Profile complete! Welcome to Exprezzr.");
-            setTimeout(() => window.location.href = '/dashboard', 2000);
+        // 3. FUNCIÓN: Respuesta de Google Auth
+        function handleCredentialResponse(response) {
+            fetch('/auth/google', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    showCapiToast(data.error, true);
+                    return;
+                }
+
+                // Si el usuario no tiene teléfono registrado
+                if (!data.user.phone || data.user.phone === 'Pending' || data.user.phone === 'Not provided') {
+                    tempUser = data.user;
+                    const modal = document.getElementById('phoneModal');
+                    
+                    // Forzamos visibilidad para celulares
+                    modal.style.display = 'flex';
+                    setTimeout(() => {
+                        modal.classList.add('active');
+                    }, 10);
+                } else {
+                    showCapiToast("Welcome back, " + data.user.firstName);
+                    setTimeout(() => window.location.href = '/dashboard', 1500);
+                }
+            })
+            .catch(err => {
+                console.error("Auth error:", err);
+                showCapiToast("Google Authentication failed", true);
+            });
         }
-    } catch (err) {
-        showCapiToast("Error saving phone", true);
-    }
-});
-    fetch('/auth/google', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ token: response.credential })
-    })
-    .then(r => r.json())
-    .then(data => {
-        // Si el usuario no tiene teléfono, MOSTRAR MODAL
-        if (!data.user.phone || data.user.phone === 'Pending') {
-            tempUser = data.user;
-            const modal = document.getElementById('phoneModal');
-            modal.classList.add('active'); // <--- Esto activa el Flexbox del CSS
-        } else {
-            window.location.href = '/dashboard';
-        }
-    });
-}
-        
     </script>
 </body>
 </html>

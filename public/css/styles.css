@@ -1,718 +1,135 @@
 /* ======================================================
-   CAPI BY EXPREZZR - GLOBAL STYLES
+   CAPI BY EXPREZZR - MASTER STYLES (OPTIMIZED 2026)
    ====================================================== */
 :root { 
     --gold: #f4d03f; 
     --black: #0b0b0b; 
+    --dark-grey: #111111;
     --card-bg: rgba(21, 21, 21, 0.85); 
     --text: #ffffff; 
+    --border: #333333;
+    --transition: 0.3s ease;
 }
 
+/* 1. GLOBAL RESET */
 body { 
     margin: 0; 
     background-color: var(--black); 
     color: var(--text); 
     font-family: 'Inter', sans-serif; 
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* NAVBAR */
+h1, h2, h3, .logo-text { font-family: 'Orbitron', sans-serif; }
+
+/* 2. NAVBAR */
 header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 10px 5%;
-    background: rgba(0,0,0,0.95); 
-    border-bottom: 2px solid var(--gold);
-    position: sticky; 
-    top: 0; 
-    z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 10px 5%; background: rgba(0,0,0,0.95); 
+    border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000;
 }
 
 .logo-area { display: flex; align-items: center; }
-.logo-area img { height: 45px; margin-right: 12px; display: block; }
-.logo-text { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
+.logo-area img { height: 45px; margin-right: 12px; }
+.logo-text { font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
 
-nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; display: inline-block; }
+nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
 nav a:hover { color: var(--gold); }
-.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; cursor: pointer; text-align: center; }
+.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
 
-/* HERO SECTION */
+/* 3. HERO SECTION */
 .hero { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 60px 5%; 
-    min-height: 60vh; 
-    text-align: center;
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('/images/hero-bg.jpg'); 
-    background-size: cover; 
-    background-position: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    padding: 60px 5%; min-height: 60vh; text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('/images/hero-bg.jpg') center/cover; 
 }
 
-.hero-info h1 { font-size: 3rem; margin: 0; font-family: 'Orbitron', sans-serif; line-height: 1.2; }
+.hero-info h1 { font-size: 3rem; margin: 0; line-height: 1.2; }
 .hero-info h1 span { color: var(--gold); }
-.hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 20px; font-weight: 300; max-width: 600px; }
+.hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 20px; max-width: 600px; }
 
-/* CARS SECTION SLIDER */
+/* 4. CARS SECTION SLIDER */
 .autos-section { padding: 60px 5%; text-align: center; background: #050505; }
-.autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; font-family: 'Orbitron', sans-serif; color: var(--gold); }
+.autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; color: var(--gold); }
 
-.slider-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    overflow-x: auto; 
-    padding-bottom: 20px;
-    -webkit-overflow-scrolling: touch;
-}
-
+.slider-container { max-width: 1200px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
 .slider-container::-webkit-scrollbar { display: none; }
 
-.autos-grid { 
-    display: flex; 
-    gap: 20px; 
-    width: max-content; 
-    padding: 10px;
-}
+.autos-grid { display: flex; gap: 20px; width: max-content; padding: 10px; }
 
 .auto-card { 
-    background: #111; 
-    padding: 20px; 
-    border-radius: 20px; 
-    width: 300px; 
-    border: 1px solid #222; 
-    transition: 0.4s;
-    flex-shrink: 0;
+    background: var(--dark-grey); padding: 20px; border-radius: 20px; 
+    width: 300px; border: 1px solid #222; transition: var(--transition); flex-shrink: 0;
 }
-
 .auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-.auto-card img { 
-    width: 100%; 
-    height: 180px; 
-    object-fit: contain; 
-    border-radius: 15px; 
-    margin-bottom: 15px; 
-}
-.auto-card h3 { color: var(--gold); margin: 10px 0; font-size: 1.3rem; font-family: 'Orbitron', sans-serif; }
+.auto-card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; }
 
-/* BOOKING & MAP SECTION */
-.booking-section { padding: 60px 5%; background: #0b0b0b; }
+/* 5. BOOKING & FORMS */
+.booking-section { padding: 60px 5%; }
 .booking-container { 
-    display: flex; 
-    flex-wrap: wrap; 
-    max-width: 1400px; 
-    margin: 0 auto;
-    background: var(--card-bg); 
-    border-radius: 20px; 
-    overflow: hidden; 
-    border: 1px solid #333; 
+    display: flex; flex-wrap: wrap; max-width: 1400px; margin: 0 auto;
+    background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; 
 }
 
-.booking-form { 
-    flex: 1; 
-    padding: 40px; 
-    min-width: 320px; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
+.booking-form { flex: 1; padding: 40px; min-width: 320px; display: flex; flex-direction: column; gap: 20px; }
+
+.input-group, .input-field-group { display: flex; flex-direction: column; gap: 8px; position: relative; text-align: left; }
+.input-group label, .input-field-group label { color: var(--gold); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+
+input { 
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; 
+    background: #000; color: white; box-sizing: border-box; outline: none; transition: var(--transition);
 }
+input:focus { border-color: var(--gold); }
 
-.input-group { display: flex; flex-direction: column; gap: 10px; position: relative; }
-.input-group label { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+/* Fila especial para Nombre/Apellido */
+.form-row { display: flex; gap: 15px; width: 100%; margin-bottom: 5px; }
+.form-row .input-group, .form-row .input-field-group { flex: 1; }
 
-.input-group input { 
-    width: 100%; 
-    padding: 14px 45px 14px 14px; /* Espacio extra a la derecha para el botón */
-    border-radius: 8px; 
-    border: 1px solid #444; 
-    background: #000; 
-    color: white; 
-    box-sizing: border-box;
-    outline: none; 
-}
-.input-group input:focus { border-color: var(--gold); }
+/* Phone Wrapper */
+.phone-input-wrapper { display: flex; align-items: center; background: #000; border: 1px solid #444; border-radius: 8px; overflow: hidden; }
+.country-code { padding: 0 12px; color: var(--gold); font-weight: bold; border-right: 1px solid #333; }
+.phone-input-wrapper input { border: none !important; }
 
-/* BOTÓN DE UBICACIÓN PROFESIONAL (Crosshairs) */
-.btn-locate { 
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    transition: 0.3s;
-}
-
-.btn-locate svg {
-    fill: var(--gold); /* Cambiado a dorado para que combine con Exprezzr */
-    transition: 0.3s;
-}
-
-.btn-locate:hover svg {
-    fill: #ffffff;
-    transform: scale(1.2);
-}
-
-.map-container { flex: 1.5; min-width: 320px; min-height: 450px; background: #1a1a1a; }
-
-/* FOOTER */
-footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
-
-/* --- SIGNUP PAGE OVERRIDES --- */
-.signup-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--black); /* Usamos tu negro de marca */
-}
-
-.signup-card {
-    background: #111; /* Fondo oscuro para la tarjeta */
-    padding: 2.5rem;
-    border-radius: 20px;
-    border: 1px solid #333;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-}
-
-.signup-card h1 { color: var(--gold); font-family: 'Orbitron', sans-serif; font-size: 1.6rem; }
-.signup-card p { color: #888; margin-bottom: 1.5rem; }
-
-.divider { margin: 2rem 0; position: relative; border-bottom: 1px solid #333; }
-.divider span {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111;
-    padding: 0 15px;
-    color: #666;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-}
-
-.btn-primary {
-    width: 100%;
-    padding: 14px;
-    background: var(--gold);
-    color: var(--black);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.btn-primary:hover { background: #fff; transform: scale(1.02); }
-
-/* --- MEDIA QUERIES --- */
-@media (max-width: 768px) {
-    header { padding: 15px; flex-direction: column; gap: 15px; }
-    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    nav a { margin: 0 10px; font-size: 11px; }
-    .hero-info h1 { font-size: 2rem; }
-    .auto-card { width: 260px; }
-    .map-container { min-height: 300px; }
-}
-
-/* ======================================================
-   SIGNUP & REGISTRATION FORM STYLES
-   Added for: First/Last Name rows and Phone Number
-   ====================================================== */
-
-/* Centra la tarjeta en la pantalla */
-.signup-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--black);
-    padding: 20px;
-}
-
-/* Tarjeta oscura con bordes dorados */
-.signup-card {
-    background: #111; 
-    padding: 2.5rem;
-    border-radius: 20px;
-    border: 1px solid #333;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    text-align: center;
-}
-
-.logo-signup { height: 55px; margin-bottom: 20px; }
-
-/* Fila para Nombre y Apellido (Uno al lado del otro) */
-.form-row {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.form-row .input-field-group {
-    flex: 1;
-}
-
-/* Grupos de entrada individuales */
-.input-field-group {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.input-field-group label {
-    color: var(--gold);
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.input-field-group input {
-    width: 100%;
-    padding: 12px;
-    background: #000;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    box-sizing: border-box;
-    transition: 0.3s;
-}
-
-.input-field-group input:focus {
-    border-color: var(--gold);
-    outline: none;
-}
-
-/* Contenedor especial para el Teléfono (+1) */
-.phone-input-wrapper {
-    display: flex;
-    align-items: center;
-    background: #000;
-    border: 1px solid #444;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.country-code {
-    padding: 0 12px;
-    color: var(--gold);
-    font-weight: bold;
-    border-right: 1px solid #333;
-    font-size: 0.9rem;
-}
-
-.phone-input-wrapper input {
-    border: none !important;
-}
-
-/* Botón de Registro Dorado */
-.btn-primary-signup {
-    width: 100%;
-    padding: 14px;
-    background: var(--gold);
-    color: #000;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
-    text-transform: uppercase;
-}
-
-.btn-primary-signup:hover {
-    background: #fff;
-    transform: translateY(-2px);
-}
-
-/* Estilo para que el Modal flote en el centro */
-.modal-overlay {
-    position: fixed; /* Se queda fijo aunque hagas scroll */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo oscuro semitransparente */
-    display: none; /* Se activa con JS */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Aparece por encima de todo */
-}
-
-.modal-card {
-    background-color: #111;
-    padding: 30px;
-    border-radius: 15px;
-    border: 2px solid #f4d03f; /* Dorado Exprezzr */
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-/* ======================================================
-   ESTILOS PARA CAPI TOAST (Notificaciones Elegantes)
-   ====================================================== */
+/* 6. TOAST (Notificaciones) */
 .capi-toast {
-    position: fixed;
-    top: -100px; /* Oculto arriba por defecto */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #f4d03f; /* Dorado Exprezzr */
-    color: #000;
-    padding: 15px 30px;
-    border-radius: 50px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    z-index: 10000; /* Por encima de todo */
-    transition: top 0.5s ease-out, opacity 0.5s ease;
-    opacity: 0;
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    white-space: nowrap;
-    pointer-events: none;
+    position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: #000; padding: 15px 30px; border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 10000;
+    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+    opacity: 0; font-weight: 700;
 }
+.capi-toast.show { top: 30px; opacity: 1; }
+.capi-toast.error { background: #ff4d4d; color: #fff; }
 
-.capi-toast.show {
-    top: 30px; /* Aparece arriba centrado */
-    opacity: 1;
-}
-
-.capi-toast.toast-error {
-    background-color: #ff4d4d; /* Rojo para errores */
-    color: #fff;
-}
-
-.toast-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.toast-icon {
-    font-size: 1.2rem;
-}
-
-/* ======================================================
-   ESTILOS PARA MODAL CENTRADO Y ANIMADO
-   ====================================================== */
+/* 7. MODAL (Centrado Maestro) */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo oscuro semitransparente */
-    display: none; /* Se activa con JS */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Aparece por encima del formulario */
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 9999;
+    display: none; justify-content: center; align-items: center; padding: 20px;
 }
-
-.modal-overlay.active {
-    opacity: 1;
-}
+.modal-overlay.active { display: flex !important; }
 
 .modal-card {
-    background-color: #111;
-    padding: 30px;
-    border-radius: 15px;
-    border: 2px solid #f4d03f; /* Dorado Exprezzr */
-    width: 90%;
-    max-width: 420px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transform: translateY(-50px);
-    transition: transform 0.4s ease-out;
-}
-
-.modal-overlay.active .modal-card {
-    transform: translateY(0);
-}
-/* EL LETRERO DORADO (Toast) */
-.capi-toast {
-    position: fixed; /* Flota sobre todo */
-    top: -100px; /* Escondido arriba */
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f4d03f; /* Oro Exprezzr */
-    color: #000;
-    padding: 12px 25px;
-    border-radius: 50px;
-    font-weight: bold;
-    z-index: 10000; /* Asegura que esté al frente */
-    transition: top 0.5s ease-in-out; /* Animación de caída */
-}
-
-/* Cuando el JS le pone la clase .show, baja del techo */
-.capi-toast.show {
-    top: 20px;
-}
-
-/* EL MODAL NEGRO (Centrado) */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9); /* Fondo oscuro */
-    display: none; /* Se activa con JS */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-/* Ajuste de formulario para evitar cajas desalineadas */
-.form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-.form-row input { flex: 1; }
-
-.signup-card input {
-    width: 100%;
-    padding: 12px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: white;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-/* El Toast Dorado (Notificación) */
-.capi-toast {
-    position: fixed;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f4d03f;
-    color: black;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-weight: bold;
-    transition: top 0.5s ease;
-    z-index: 10000;
-}
-.capi-toast.show { top: 30px; }
-.capi-toast.error { background: #ff4d4d; color: white; }
-
-/* Modal centrado */
-.modal-overlay {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.9);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 9999;
-}
-.modal-card {
-    background: #111;
-    padding: 30px;
-    border: 2px solid #f4d03f;
-    border-radius: 15px;
-    text-align: center;
-    max-width: 400px;
-}
-/* --- ORGANIZACIÓN DE LAS CASILLAS --- */
-.signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.form-row {
-    display: flex;
-    gap: 10px; /* Espacio entre First y Last Name */
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.input-group label {
-    color: #f4d03f;
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    background: #111;
-    border: 1px solid #333;
-    color: white;
-    border-radius: 8px;
-}
-
-/* --- SOLUCIÓN DEL MODAL (Aparición segura) --- */
-.modal-overlay {
-    position: fixed; /* Esto lo saca del flujo y lo pone al frente */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.95); /* Fondo negro puro */
-    z-index: 10000; /* Número altísimo para que nada lo tape */
-    display: none; /* Se activa con JS */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Cuando el Modal se activa */
-.modal-overlay.active {
-    display: flex !important;
-}
-
-.modal-card {
-    background: #000;
-    border: 2px solid #f4d03f;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
+    background: #000; padding: 40px; border-radius: 20px; border: 2px solid var(--gold);
+    width: 100%; max-width: 400px; text-align: center;
     box-shadow: 0 0 30px rgba(244, 208, 63, 0.2);
 }
-/* --- ORGANIZACIÓN DEL FORMULARIO --- */
-.form-row {
-    display: flex;
-    gap: 10px; /* Espacio entre Nombre y Apellido */
-    margin-bottom: 10px;
-}
 
-.form-row input {
-    flex: 1; /* Hace que ambos midan lo mismo en la misma fila */
+/* 8. BUTTONS */
+.btn-primary-signup, .btn-primary {
+    width: 100%; padding: 14px; background: var(--gold); color: #000;
+    border: none; border-radius: 10px; font-weight: bold; text-transform: uppercase;
+    cursor: pointer; transition: var(--transition);
 }
+.btn-primary-signup:hover { background: #fff; transform: translateY(-2px); }
 
-.signup-card input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: white;
-    border-radius: 5px;
-    box-sizing: border-box; /* Evita que el input se salga del borde */
-}
-
-/* Alineación del Teléfono con el +1 */
-.phone-input-wrapper {
-    display: flex;
-    align-items: center;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding-left: 10px;
-}
-
-.country-code {
-    color: #f4d03f; /* Dorado Exprezzr */
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.phone-input-wrapper input {
-    border: none !important; /* Quita el borde interno */
-    margin-bottom: 0 !important;
-}
-
-/* --- EL MODAL (Centrado y por encima de todo) --- */
-.modal-overlay {
-    position: fixed; /* Lo deja fijo en la pantalla */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9); /* Fondo oscuro semitransparente */
-    z-index: 9999; /* Asegura que esté al frente */
-    display: none; /* Escondido por defecto */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Esta clase activa el Modal desde el script */
-.modal-overlay.active {
-    display: flex !important;
-}
-
-.modal-card {
-    background: #111;
-    padding: 30px;
-    border: 2px solid #f4d03f;
-    border-radius: 15px;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-/* --- NOTIFICACIÓN DORADA (Toast) --- */
-.capi-toast {
-    position: fixed;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f4d03f;
-    color: black;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-weight: bold;
-    transition: top 0.5s ease;
-    z-index: 10000;
-}
-
-.capi-toast.show {
-    top: 30px;
-}
-/* --- DISEÑO RESPONSIVO PARA EXPREZZR --- */
-
-.signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-}
-
-/* En PC se ven lado a lado, en celular se apilan */
-.form-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap; /* Permite que bajen si no caben */
-}
-
-.form-row input {
-    flex: 1;
-    min-width: 140px; /* Evita que se hagan diminutos */
-}
-
-/* Ajuste para pantallas pequeñas (Celulares) */
-@media (max-width: 480px) {
-    .signup-card {
-        padding: 20px;
-        width: 95%;
-    }
-    
-    .form-row {
-        flex-direction: column; /* Apila Nombre y Apellido uno arriba del otro */
-    }
-    
-    .logo-signup {
-        height: 50px; /* Logo más pequeño en móvil */
-    }
+/* 9. MEDIA QUERIES (Responsivo) */
+@media (max-width: 768px) {
+    header { flex-direction: column; padding: 15px; gap: 10px; }
+    nav { justify-content: center; flex-wrap: wrap; }
+    nav a { margin: 5px 10px; }
+    .hero-info h1 { font-size: 2.2rem; }
+    .form-row { flex-direction: column; gap: 15px; }
 }
