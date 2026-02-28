@@ -1,3 +1,6 @@
+/* ======================================================
+   CAPI BY EXPREZZR - GLOBAL STYLES
+   ====================================================== */
 :root { 
     --gold: #f4d03f; 
     --black: #0b0b0b; 
@@ -32,7 +35,7 @@ header {
 
 nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; display: inline-block; }
 nav a:hover { color: var(--gold); }
-.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; cursor: pointer; text-align: center; }
 
 /* HERO SECTION */
 .hero { 
@@ -59,12 +62,11 @@ nav a:hover { color: var(--gold); }
 .slider-container {
     max-width: 1200px;
     margin: 0 auto;
-    overflow-x: auto; /* Permite scroll manual en móvil */
+    overflow-x: auto; 
     padding-bottom: 20px;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Ocultar barra de scroll pero mantener funcionalidad */
 .slider-container::-webkit-scrollbar { display: none; }
 
 .autos-grid { 
@@ -116,41 +118,225 @@ nav a:hover { color: var(--gold); }
     gap: 20px; 
 }
 
-.input-group { display: flex; flex-direction: column; gap: 10px; }
+.input-group { display: flex; flex-direction: column; gap: 10px; position: relative; }
 .input-group label { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-.input-field-wrapper { display: flex; gap: 10px; }
 
 .input-group input { 
-    flex: 1; 
-    padding: 14px; 
+    width: 100%; 
+    padding: 14px 45px 14px 14px; /* Espacio extra a la derecha para el botón */
     border-radius: 8px; 
     border: 1px solid #444; 
     background: #000; 
     color: white; 
+    box-sizing: border-box;
     outline: none; 
 }
 .input-group input:focus { border-color: var(--gold); }
 
-.btn-locate { background: var(--gold); border: none; border-radius: 8px; cursor: pointer; padding: 0 15px; transition: 0.3s; }
-.btn-locate:hover { background: #fff; transform: scale(1.05); }
+/* BOTÓN DE UBICACIÓN PROFESIONAL (Crosshairs) */
+.btn-locate { 
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    transition: 0.3s;
+}
+
+.btn-locate svg {
+    fill: var(--gold); /* Cambiado a dorado para que combine con Exprezzr */
+    transition: 0.3s;
+}
+
+.btn-locate:hover svg {
+    fill: #ffffff;
+    transform: scale(1.2);
+}
 
 .map-container { flex: 1.5; min-width: 320px; min-height: 450px; background: #1a1a1a; }
 
 /* FOOTER */
 footer { padding: 40px; text-align: center; border-top: 1px solid #222; font-size: 13px; color: #777; background: #000; }
 
-/* --- MEDIA QUERIES PARA MOBILE REACH --- */
+/* --- SIGNUP PAGE OVERRIDES --- */
+.signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--black); /* Usamos tu negro de marca */
+}
+
+.signup-card {
+    background: #111; /* Fondo oscuro para la tarjeta */
+    padding: 2.5rem;
+    border-radius: 20px;
+    border: 1px solid #333;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.signup-card h1 { color: var(--gold); font-family: 'Orbitron', sans-serif; font-size: 1.6rem; }
+.signup-card p { color: #888; margin-bottom: 1.5rem; }
+
+.divider { margin: 2rem 0; position: relative; border-bottom: 1px solid #333; }
+.divider span {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    padding: 0 15px;
+    color: #666;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-primary:hover { background: #fff; transform: scale(1.02); }
+
+/* --- MEDIA QUERIES --- */
 @media (max-width: 768px) {
     header { padding: 15px; flex-direction: column; gap: 15px; }
     nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
     nav a { margin: 0 10px; font-size: 11px; }
-    
     .hero-info h1 { font-size: 2rem; }
-    .hero-info p { font-size: 1rem; }
-
-    .autos-grid { padding: 0 20px; }
-    .auto-card { width: 260px; } /* Un poco más pequeños para que se vea el siguiente */
-
-    .booking-form { padding: 25px; }
+    .auto-card { width: 260px; }
     .map-container { min-height: 300px; }
+}
+
+/* ======================================================
+   SIGNUP & REGISTRATION FORM STYLES
+   Added for: First/Last Name rows and Phone Number
+   ====================================================== */
+
+/* Centra la tarjeta en la pantalla */
+.signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--black);
+    padding: 20px;
+}
+
+/* Tarjeta oscura con bordes dorados */
+.signup-card {
+    background: #111; 
+    padding: 2.5rem;
+    border-radius: 20px;
+    border: 1px solid #333;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.logo-signup { height: 55px; margin-bottom: 20px; }
+
+/* Fila para Nombre y Apellido (Uno al lado del otro) */
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-row .input-field-group {
+    flex: 1;
+}
+
+/* Grupos de entrada individuales */
+.input-field-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.input-field-group label {
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-field-group input {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+.input-field-group input:focus {
+    border-color: var(--gold);
+    outline: none;
+}
+
+/* Contenedor especial para el Teléfono (+1) */
+.phone-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #000;
+    border: 1px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.country-code {
+    padding: 0 12px;
+    color: var(--gold);
+    font-weight: bold;
+    border-right: 1px solid #333;
+    font-size: 0.9rem;
+}
+
+.phone-input-wrapper input {
+    border: none !important;
+}
+
+/* Botón de Registro Dorado */
+.btn-primary-signup {
+    width: 100%;
+    padding: 14px;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-primary-signup:hover {
+    background: #fff;
+    transform: translateY(-2px);
 }

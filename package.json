@@ -8,10 +8,12 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^4.22.1",
+    "google-auth-library": "^10.6.1",
     "mongodb": "^7.1.0",
     "mongoose": "^7.8.9",
     "nodemailer": "^8.0.1"

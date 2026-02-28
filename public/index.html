@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google-site-verification" content="googlef3ec2cf8863d6931.html">
-    <title>Taxi App - Ryan</title>
+    <title>CAPI by Exprezzr - Luxury Ride</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -16,8 +16,10 @@
             <span class="logo-text">TAXI APP</span>
         </div>
         <nav>
-            <a href="/register" class="btn-sistema">Register</a>
-            <a href="/user">User</a>
+            <a href="/signup" class="btn-sistema">Sign Up</a>
+            
+            <a href="/login" class="nav-link">Login</a>
+            
             <a href="/services">Services</a>
             <a href="/support">Support</a>
             <a href="/about">About</a>
@@ -28,16 +30,25 @@
         <div class="booking-container">
             <div class="booking-form">
                 <h2>Book a Ride</h2>
+                
                 <div class="input-group">
-                    <input type="text" id="origin" placeholder="Presiona 📍 para tu ubicación...">
-                    <button id="locateBtn" class="btn-locate" title="Obtener mi ubicación">📍</button>
+                    <input type="text" id="origin" placeholder="Pickup location...">
+                    <button id="locateBtn" class="btn-locate" title="Get my location">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 18px; fill: #555;">
+                            <path d="M256 0c17.7 0 32 14.3 32 32V66.7C368.4 80.1 431.9 143.6 445.3 224H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H445.3C431.9 368.4 368.4 431.9 256 445.3V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.3C143.6 431.9 80.1 368.4 66.7 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H66.7C80.1 143.6 143.6 80.1 224 66.7V32c0-17.7 14.3-32 32-32zM128 256a128 128 0 1 0 256 0 128 128 0 1 0 -256 0zm128-80a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
+                        </svg>
+                    </button>
                 </div>
+
                 <div class="input-group">
-                    <input type="text" id="destination" placeholder="Destino (Ej. Boston)">
+                    <input type="text" id="destination" placeholder="Destination (e.g., Boston)">
                 </div>
-                <button id="calcFareBtn" class="btn-sistema" style="width: 100%; margin-top: 10px;">Calcular Tarifa</button>
+
+                <button id="calcFareBtn" class="btn-sistema" style="width: 100%; margin-top: 10px;">Get Fare Estimate</button>
+                
                 <div id="priceResult" class="price-result"></div>
             </div>
+
             <div id="map" class="map-container"></div>
         </div>
     </section>
@@ -46,6 +57,10 @@
         <div class="hero-info">
             <h1>TRAVEL WITH <span>STYLE</span></h1>
             <p>The most advanced transportation app in Shrewsbury. <br> Safety and luxury in every journey.</p>
+            
+            <div style="margin-top: 20px;">
+                <a href="/signup" class="btn-gold-large">Join Exprezzr LLC</a>
+            </div>
         </div>
     </section>
 
@@ -103,7 +118,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Taxi App - Ryan Ruffen. All rights reserved.</p>
+        <p>&copy; 2026 CAPI by Exprezzr LLC - Ryan Ruffen. All rights reserved.</p>
     </footer>
 
     <script src="js/scripts.js"></script>
