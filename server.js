@@ -34,13 +34,21 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 // --- 4. CONFIGURACIÓN DE CORREO (NODEMAILER) ---
+// Configuración Profesional para Exprezzr Support
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, 
+  service: 'gmail', // Simplifica la configuración para Google Workspace
   auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS  
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Verificación de conexión al arrancar (útil para debug)
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ Error en el transportador de correo:", error);
+  } else {
+    console.log("✅ Servidor listo para enviar correos desde Support");
   }
 });
 
