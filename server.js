@@ -15,27 +15,29 @@ app.use(express.json());
 app.use(cors()); 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- 2. CONEXIÓN FIRESTORE (NATIVA DE GOOGLE) ---
+// --- 2. CONEXIÓN FIRESTORE ---
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.applicationDefault()
     });
 }
 const db = admin.firestore();
-console.log('✅ FIRESTORE: Conectado con éxito desde Google Cloud');
+console.log('✅ FIRESTORE: Conectado con éxito');
 
-// --- 3. CONFIGURACIÓN DE CORREO (NODEMAILER) ---
+// --- 3. CONFIGURACIÓN DE CORREO ---
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true para puerto 465
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.EMAIL_USER, // support@exprezzr.com
+    pass: process.env.EMAIL_PASS  // <--- AQUÍ VA LA CLAVE DE 16 LETRAS
   }
 });
 
-// --- 4. RUTAS DE AUTENTICACIÓN ---
+// --- 4. RUTAS DE AUTENTICACIÓN (API) ---
 
-// A. LOGIN CON GOOGLE (BOTÓN)
+// A. LOGIN / REGISTRO CON GOOGLE
 app.post('/auth/google', async (req, res) => {
     try {
         const { token } = req.body;
@@ -43,16 +45,13 @@ app.post('/auth/google', async (req, res) => {
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        const payload = ticket.getPayload();
-        const { email, given_name, family_name, picture } = payload;
+        const { email, given_name, family_name, picture } = ticket.getPayload();
 
         const userRef = db.collection('users').doc(email);
         const doc = await userRef.get();
 
-        let userData;
         if (!doc.exists) {
-            // Si el usuario no existe, lo creamos automáticamente
-            userData = {
+            const userData = {
                 firstName: given_name,
                 lastName: family_name || '',
                 email: email,
@@ -61,24 +60,46 @@ app.post('/auth/google', async (req, res) => {
                 fechaRegistro: admin.firestore.FieldValue.serverTimestamp()
             };
             await userRef.set(userData);
-            console.log(`🆕 Usuario nuevo creado vía Google: ${email}`);
+            return res.json({ isNewUser: true, user: userData });
         } else {
-            userData = doc.data();
+            return res.json({ isNewUser: false, user: doc.data() });
         }
-
-        res.json({ user: userData });
     } catch (err) {
-        console.error("Error Google Auth:", err);
-        res.status(500).json({ error: "Google Authentication Failed" });
+        res.status(500).json({ error: "Google Auth Failed" });
     }
 });
 
-// B. LOGIN MANUAL
+// B. REGISTRO MANUAL
+app.post('/register', async (req, res) => {
+    try {
+        const { firstName, lastName, email, phone, password } = req.body;
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
+
+        if (doc.exists) return res.status(400).json({ error: "Email already registered" });
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = {
+            firstName, lastName, email, phone,
+            password: hashedPassword,
+            role: 'client',
+            fechaRegistro: admin.firestore.FieldValue.serverTimestamp()
+        };
+
+        await userRef.set(newUser);
+        res.status(201).json({ message: "User created", user: { firstName, email } });
+    } catch (err) {
+        res.status(500).json({ error: "Error creating account" });
+    }
+});
+
+// C. LOGIN MANUAL
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const userRef = db.collection('users').doc(email);
-        const doc = await userRef.get();
+        const doc = await db.collection('users').doc(email).get();
 
         if (!doc.exists) return res.status(400).json({ error: "User not found" });
         
@@ -94,62 +115,57 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// C. FORGOT PASSWORD
+// D. ACTUALIZAR TELÉFONO (POST-GOOGLE)
+app.post('/update-phone', async (req, res) => {
+    try {
+        const { email, phone } = req.body;
+        await db.collection('users').doc(email).update({ phone });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to update phone" });
+    }
+});
+
+// E. RECUPERAR / SETEAR CONTRASEÑA
 app.post('/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
-        const userRef = db.collection('users').doc(email);
-        const doc = await userRef.get();
-
+        const doc = await db.collection('users').doc(email).get();
         if (!doc.exists) return res.status(404).json({ error: "No account found" });
-        const user = doc.data();
 
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
         const host = req.get('host');
         const resetLink = `${protocol}://${host}/reset-password?email=${email}`;
 
-        const mailOptions = {
-            from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
+        await transporter.sendMail({
+            from: `"CAPI Support" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: 'Reset Your CAPI Password',
-            html: `
-                <div style="background:#000; color:#fff; padding:30px; border:2px solid #f4d03f; text-align:center; font-family:sans-serif;">
-                    <h1 style="color:#f4d03f;">PASSWORD RECOVERY</h1>
-                    <p>Hello ${user.firstName}, click below to set a new password.</p>
-                    <a href="${resetLink}" style="display:inline-block; padding:15px 25px; background:#f4d03f; color:#000; text-decoration:none; font-weight:bold; border-radius:50px;">RESET PASSWORD</a>
-                </div>`
-        };
-
-        await transporter.sendMail(mailOptions);
-        res.json({ message: "Recovery email sent!" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to send email." });
-    }
+            subject: 'Reset Your Password',
+            html: `<div style="text-align:center; border:2px solid #f4d03f; padding:20px; background:#000; color:#fff;">
+                   <h2 style="color:#f4d03f;">PASSWORD RESET</h2>
+                   <a href="${resetLink}" style="color:#000; background:#f4d03f; padding:10px 20px; text-decoration:none; font-weight:bold;">RESET NOW</a>
+                   </div>`
+        });
+        res.json({ message: "Email sent!" });
+    } catch (err) { res.status(500).json({ error: "Error" }); }
 });
 
-// D. ACTUALIZAR CONTRASEÑA
 app.post('/set-password', async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-        await db.collection('users').doc(email).update({
-            password: hashedPassword
-        });
-        
-        res.json({ message: "Password updated successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: "Error updating password" });
-    }
+        await db.collection('users').doc(email).update({ password: hashedPassword });
+        res.json({ message: "Updated!" });
+    } catch (err) { res.status(500).json({ error: "Error" }); }
 });
 
-// --- 5. RUTAS DE PÁGINAS ---
-app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
+// --- 5. RUTAS DE PÁGINAS (SERVIR HTML) ---
 app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
+app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-// --- 6. INICIO DEL SERVIDOR ---
+// --- 6. LANZAMIENTO ---
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 CAPI Server running on port ${PORT}`);
