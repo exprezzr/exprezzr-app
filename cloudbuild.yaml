@@ -1,9 +1,9 @@
 steps:
-  # 1. Construir la imagen
+  # 1. Construir la imagen de Docker
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app', '.']
 
-  # 2. Subir a Artifact Registry
+  # 2. Subir la imagen a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app']
 
@@ -19,3 +19,6 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app'
