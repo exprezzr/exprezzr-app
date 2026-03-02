@@ -150,7 +150,10 @@ app.post('/forgot-password', async (req, res) => {
                    </div>`
         });
         res.json({ message: "Email sent!" });
-    } catch (err) { res.status(500).json({ error: "Error" }); }
+    } catch (err) {
+        console.error("CRITICAL SMTP ERROR:", err);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
 });
 
 app.post('/set-password', async (req, res) => {
@@ -172,4 +175,31 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 CAPI Server running on port ${PORT}`);
+});
+
+// server.js
+require('dotenv').config();
+const express = require('express');
+const { sendResetEmail } = require('./email/mailer'); // Importa desde tu carpeta email
+
+// ... (resto de tus configuraciones de Express y Firebase)
+
+app.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        // 1. Verificar si el usuario existe en Firestore
+        const doc = await db.collection('users').doc(email).get();
+        if (!doc.exists) return res.status(404).json({ error: "No account found" });
+
+        // 2. Construir el link (Cloud Run usa https por defecto)
+        const resetLink = `https://${req.get('host')}/reset-password?email=${email}`;
+
+        // 3. Enviar correo usando el módulo externo
+        await sendResetEmail(email, resetLink);
+        
+        res.json({ message: "Email sent successfully!" });
+    } catch (err) {
+        console.error("DETAILED ERROR IN SERVER.JS:", err); // Esto aparecerá en los logs de Cloud Run
+        res.status(500).json({ error: "Server failed to send email." });
+    }
 });
