@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google-signin-client_id" content="139793933381-76aoe2ct7h3e317qj6dvoh9iotb8tb4t.apps.googleusercontent.com">
+    
     <title>CAPI by Exprezzr - Luxury Ride</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
@@ -114,15 +116,15 @@
             <div class="divider"><span>OR EMAIL</span></div>
 
             <form id="modalLoginForm" onsubmit="handleManualLogin(event)">
-    <input type="email" id="modalEmail" placeholder="Email Address" required class="modal-input">
-    <input type="password" id="modalPassword" placeholder="Password" required class="modal-input">
-    
-    <div style="text-align: right; margin-bottom: 10px;">
-        <a href="javascript:void(0)" onclick="forgotPassword()" style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.7rem; text-decoration: none;">FORGOT PASSWORD?</a>
-    </div>
+                <input type="email" id="modalEmail" placeholder="Email Address" required class="modal-input">
+                <input type="password" id="modalPassword" placeholder="Password" required class="modal-input">
+                
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <a href="javascript:void(0)" onclick="forgotPassword()" style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.7rem; text-decoration: none;">FORGOT PASSWORD?</a>
+                </div>
 
-    <button type="submit" class="btn-primary-signup" style="width: 100%;">ENTER</button>
-</form>
+                <button type="submit" class="btn-primary-signup" style="width: 100%;">ENTER</button>
+            </form>
         </div>
     </div>
 
@@ -150,14 +152,12 @@
 
         // --- LÓGICA DE AUTENTICACIÓN ---
 
-        // Éxito en Login (Manual o Google)
         function loginSuccess(user) {
             localStorage.setItem('capi_user', JSON.stringify(user));
             closeLoginModal();
             updateUI(user);
         }
 
-        // Login Manual
         async function handleManualLogin(event) {
             event.preventDefault();
             const email = document.getElementById('modalEmail').value;
@@ -180,7 +180,7 @@
             }
         }
 
-        // Login Google
+        // REVISIÓN: Integración con la ruta /auth/google de Firestore
         function handleCredentialResponse(response) {
             fetch('/auth/google', {
                 method: 'POST',
@@ -189,51 +189,43 @@
             })
             .then(res => res.json())
             .then(data => {
-                if (data.isNewUser === false) {
+                if (data.user) {
                     loginSuccess(data.user);
-                } else if (data.isNewUser === true) {
-                    // Si es nuevo, lo mandamos a signup para que complete el registro (teléfono)
-                    alert("Account not found. Redirecting to Sign Up...");
-                    window.location.href = "/signup";
                 } else {
                     alert(data.error || "Google auth failed");
                 }
             })
-            .catch(err => console.error("Error:", err));
+            .catch(err => {
+                console.error("Error:", err);
+                alert("Connection error with Firestore server.");
+            });
         }
 
-        // Forgot Password
-async function forgotPassword() {
-    const email = document.getElementById('modalEmail').value;
-    
-    if (!email) {
-        alert("Please enter your email address first so we know where to send the link.");
-        return;
-    }
-
-    try {
-        const response = await fetch('/forgot-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-            alert("Success! Check your email (ryanruffen@gmail.com) for the reset link.");
-        } else {
-            alert(data.error || "Something went wrong.");
+        async function forgotPassword() {
+            const email = document.getElementById('modalEmail').value;
+            if (!email) {
+                alert("Please enter your email address first.");
+                return;
+            }
+            try {
+                const response = await fetch('/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Success! Check your email for the reset link.");
+                } else {
+                    alert(data.error || "Something went wrong.");
+                }
+            } catch (error) {
+                alert("Connection error.");
+            }
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Connection error. Is the server running?");
-    }
-}
 
         // --- ACTUALIZACIÓN DE INTERFAZ ---
         function updateUI(user) {
-            // Saludo en el Formulario
             const greeting = document.getElementById('userGreetingArea');
             const nameDisp = document.getElementById('userNameDisplay');
             if (greeting && nameDisp) {
@@ -242,7 +234,6 @@ async function forgotPassword() {
                 document.getElementById('formMainTitle').innerText = "Where to?";
             }
 
-            // Nombre en el Navbar
             const nav = document.getElementById('mainNav');
             if (nav) {
                 nav.innerHTML = `
@@ -280,13 +271,10 @@ async function forgotPassword() {
             new google.maps.places.Autocomplete(document.getElementById("destination"), options);
         }
 
-        // --- EVENTOS AL CARGAR ---
         window.addEventListener('load', () => {
-            // Cargar sesión si existe
             const savedUser = localStorage.getItem('capi_user');
             if (savedUser) updateUI(JSON.parse(savedUser));
 
-            // Botón de geolocalización
             document.getElementById('btnLocate')?.addEventListener('click', () => {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition((position) => {
@@ -302,7 +290,6 @@ async function forgotPassword() {
                 }
             });
 
-            // Botón de Fare Estimate
             document.getElementById('calcFareBtn').addEventListener('click', () => {
                 const start = document.getElementById('pickupAddress').value;
                 const end = document.getElementById('destination').value;
@@ -322,7 +309,6 @@ async function forgotPassword() {
                 });
             });
 
-            // Parámetro para abrir login desde Signup
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('openLogin') === 'true') openLoginModal();
         });
