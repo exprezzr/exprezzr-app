@@ -27,11 +27,14 @@ console.log('✅ FIRESTORE: Conectado con éxito');
 // --- 3. CONFIGURACIÓN DE CORREO ---
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // true para puerto 465
+  port: 587,
+  secure: false, // false para puerto 587
   auth: {
-    user: process.env.EMAIL_USER, // support@exprezzr.com
-    pass: process.env.EMAIL_PASS  // <--- AQUÍ VA LA CLAVE DE 16 LETRAS
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    rejectUnauthorized: false // Esto ayuda si hay problemas de certificados en el servidor
   }
 });
 
