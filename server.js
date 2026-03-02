@@ -117,19 +117,24 @@ app.post('/update-phone', async (req, res) => {
 });
 
 // E. RECUPERAR / SETEAR CONTRASEÑA
-app.post('/forgot-password', async (req, res) => {
+app.post('/auth/forgot-password', async (req, res) => {
+    const { email } = req.body;
     try {
-        const { email } = req.body;
-        const doc = await db.collection('users').doc(email).get();
-        if (!doc.exists) return res.status(404).json({ error: "No account found" });
-        
-        const resetLink = `https://${req.get('host')}/reset-password?email=${email}`;
+        // 1. Verificar si el usuario existe en Firestore
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
 
-        await sendResetEmail(email, resetLink);
-        res.json({ message: "Email sent successfully!" });
-    } catch (err) {
-        console.error("DETAILED ERROR IN SERVER.JS:", err);
-        res.status(500).json({ error: "Server failed to send email." });
+        if (!doc.exists) {
+            return res.status(404).send('El usuario no existe');
+        }
+
+        // 2. Llamar a la función que importaste en la línea 9
+        await sendResetEmail(email);
+
+        res.status(200).send('Correo de recuperación enviado');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al enviar el email');
     }
 });
 
