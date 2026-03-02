@@ -11,6 +11,31 @@ function rotateCars() {
 }
 setInterval(rotateCars, 3000);
 
+// --- SESIÓN DE USUARIO ---
+function checkUserSession() {
+    const savedUser = localStorage.getItem('capi_user');
+    const greetingArea = document.getElementById('userGreetingArea');
+    const nameDisplay = document.getElementById('userNameDisplay');
+    const formTitle = document.getElementById('formMainTitle');
+    const navButtons = document.querySelector('.btn-sistema'); // Botón de Sign Up
+
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        
+        // 1. Mostrar saludo y nombre
+        if (greetingArea) greetingArea.style.display = 'block';
+        if (nameDisplay) nameDisplay.innerText = user.firstName.toUpperCase();
+        
+        // 2. Cambiar el título del formulario por algo más directo
+        if (formTitle) formTitle.innerText = "Where are we going?";
+        
+        // 3. Ocultar el botón de Sign Up del Navbar (ya es usuario)
+        if (navButtons) navButtons.style.display = 'none';
+        console.log("CAPI: Sesión activa de " + user.email);
+    }
+}
+window.addEventListener('load', checkUserSession);
+
 // --- GOOGLE MAPS ---
 let map, directionsService, directionsRenderer;
 
@@ -87,3 +112,46 @@ document.getElementById('calcFareBtn')?.addEventListener('click', () => {
         }
     });
 });
+
+// Función para ABRIR el modal desde el menú
+function openLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'flex'; // Primero lo mostramos
+        setTimeout(() => {
+            modal.classList.add('active'); // Luego activamos la animación
+        }, 10);
+        console.log("CAPI: Modal de Login abierto desde el menú");
+    }
+}
+
+// Función para CERRAR el modal (la X y fuera del cuadro)
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.classList.remove('active'); // Quitamos animación
+        setTimeout(() => {
+            modal.style.display = 'none'; // Al final ocultamos
+        }, 300);
+    }
+}
+
+// Cerrar si hacen clic en el fondo negro (fuera de la tarjeta)
+window.onclick = function(event) {
+    const modal = document.getElementById('loginModal');
+    if (event.target == modal) {
+        closeLoginModal();
+    }
+}
+function forgotPassword() {
+    const email = document.getElementById('modalEmail').value;
+    if (!email) return alert("Please enter your email first.");
+    
+    fetch('/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    })
+    .then(r => r.json())
+    .then(data => alert(data.message || data.error));
+}

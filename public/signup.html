@@ -121,7 +121,7 @@
 
                 if (res.ok) {
                     showCapiToast("Account created successfully!");
-                    setTimeout(() => window.location.href = '/login', 2500);
+                    setTimeout(() => window.location.href = '/?openLogin=true', 2500);
                 } else {
                     showCapiToast(data.error || "Error", true);
                 }
@@ -147,7 +147,7 @@
 
                 if (res.ok) {
                     showCapiToast("Profile complete! Welcome to Exprezzr.");
-                    setTimeout(() => window.location.href = '/dashboard', 2000);
+                    setTimeout(() => window.location.href = '/', 2000);
                 } else {
                     showCapiToast("Error updating profile", true);
                 }
@@ -157,39 +157,43 @@
         });
 
         // 3. FUNCIÓN: Respuesta de Google Auth
-        function handleCredentialResponse(response) {
-            fetch('/auth/google', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token: response.credential })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.error) {
-                    showCapiToast(data.error, true);
-                    return;
-                }
+function handleCredentialResponse(response) {
+    fetch('/auth/google', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token: response.credential })
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log("Respuesta del servidor:", data); // Mira esto en la consola de tu Mac
 
-                // Si el usuario no tiene teléfono registrado
-                if (!data.user.phone || data.user.phone === 'Pending' || data.user.phone === 'Not provided') {
-                    tempUser = data.user;
-                    const modal = document.getElementById('phoneModal');
-                    
-                    // Forzamos visibilidad para celulares
-                    modal.style.display = 'flex';
-                    setTimeout(() => {
-                        modal.classList.add('active');
-                    }, 10);
-                } else {
-                    showCapiToast("Welcome back, " + data.user.firstName);
-                    setTimeout(() => window.location.href = '/dashboard', 1500);
-                }
-            })
-            .catch(err => {
-                console.error("Auth error:", err);
-                showCapiToast("Google Authentication failed", true);
-            });
+        // CASO: EL USUARIO YA EXISTE
+        if (data.isNewUser === false) {
+            // Mostramos el Toast Rojo
+            showCapiToast("Email already registered. Redirecting to Login...", true);
+            
+            // Forzamos la redirección al Mapa con la orden de abrir el Login
+            setTimeout(() => {
+                window.location.href = "/?openLogin=true";
+            }, 2000);
+            return;
         }
+
+        // CASO: USUARIO NUEVO
+        if (data.isNewUser === true) {
+            tempUser = data.user;
+            // Abrir modal del teléfono
+            const phoneModal = document.getElementById('phoneModal');
+            phoneModal.style.display = 'flex';
+            phoneModal.classList.add('active');
+        }
+    })
+    .catch(err => {
+        console.error("Error en la petición:", err);
+        showCapiToast("Connection error", true);
+    });
+}
+            
     </script>
 </body>
 </html>

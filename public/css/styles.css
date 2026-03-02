@@ -1,12 +1,12 @@
 /* ======================================================
-   CAPI BY EXPREZZR - máster STYLES (OPTIMIZED 2026)
+   CAPI BY EXPREZZR - MASTER STYLES (OPTIMIZED 2026)
    ====================================================== */
-:root { 
-    --gold: #f4d03f; 
-    --black: #0b0b0b; 
+:root {
+    --gold: #f4d03f;
+    --black: #0b0b0b;
     --dark-grey: #111111;
-    --card-bg: rgba(21, 21, 21, 0.85); 
-    --text: #ffffff; 
+    --card-bg: rgba(21, 21, 21, 0.9);
+    --text: #ffffff;
     --border: #333333;
     --transition: 0.3s ease;
 }
@@ -21,12 +21,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, .logo-text { font-family: 'Orbitron', sans-serif; }
+h1, h2, h3, .logo-text, .btn-get-fare { font-family: 'Orbitron', sans-serif; }
 
 /* 2. NAVBAR */
 header { 
     display: flex; justify-content: space-between; align-items: center; 
-    padding: 10px 5%; background: rgba(0,0,0,0.95); 
+    padding: 10px 5%; background: rgba(0,0,0,0.95);
     border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000;
 }
 
@@ -34,102 +34,581 @@ header {
 .logo-area img { height: 45px; margin-right: 12px; }
 .logo-text { font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
 
+/* ======================================================
+   REGISTRO & LOGIN - REFUERZO DE FORMATO
+   ====================================================== */
+
+/* Fondo de la página de registro */
+.signup-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('../images/hero-bg.jpg') center/cover;
+    padding: 20px;
+}
+
+/* Tarjeta de Registro */
+.signup-card {
+    background: #000;
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px; /* Tamaño ideal para que no se vea gigante */
+    text-align: center;
+    box-shadow: 0 0 30px rgba(244, 208, 63, 0.2);
+}
+
+.logo-signup {
+    height: 70px;
+    margin-bottom: 20px;
+}
+
+/* Formulario dentro de la tarjeta */
+#signupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Filas para Nombre y Apellido */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row input {
+    flex: 1;
+}
+
+/* Inputs de Registro */
+.signup-card input {
+    padding: 14px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.signup-card input:focus {
+    border-color: var(--gold);
+    outline: none;
+}
+
+/* Botón de Registro (Dorado) */
+.btn-primary-signup {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary-signup:hover {
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+/* Divisor */
+.divider {
+    margin: 25px 0;
+    border-top: 1px solid #333;
+    position: relative;
+}
+
+.divider span {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    padding: 0 15px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.g_id_signin {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
 nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
 nav a:hover { color: var(--gold); }
-.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; }
+.btn-sistema { border: 1px solid var(--gold); padding: 8px 18px; border-radius: 25px; color: var(--gold) !important; cursor: pointer; }
 
 /* 3. HERO SECTION */
 .hero { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    padding: 60px 5%; min-height: 60vh; text-align: center;
+    padding: 40px 5%; min-height: 40vh; text-align: center;
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('/images/hero-bg.jpg') center/cover; 
 }
 
-.hero-info h1 { font-size: 3rem; margin: 0; line-height: 1.2; }
-.hero-info h1 span { color: var(--gold); }
-.hero-info p { font-size: 1.2rem; opacity: 0.9; margin-top: 20px; max-width: 600px; }
+/* ======================================================
+   CAPI BY EXPREZZR - FINAL LAYOUT ADJUSTMENTS
+   ====================================================== */
 
-/* 4. CARS SECTION SLIDER */
-.autos-section { padding: 60px 5%; text-align: center; background: #050505; }
-.autos-section h2 { font-size: 2.5rem; margin-bottom: 40px; color: var(--gold); }
-
-.slider-container { max-width: 1200px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
-.slider-container::-webkit-scrollbar { display: none; }
-
-.autos-grid { display: flex; gap: 20px; width: max-content; padding: 10px; }
-
-.auto-card { 
-    background: var(--dark-grey); padding: 20px; border-radius: 20px; 
-    width: 300px; border: 1px solid #222; transition: var(--transition); flex-shrink: 0;
-}
-.auto-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-.auto-card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; }
-
-/* 5. BOOKING & FORMS */
-.booking-section { padding: 60px 5%; }
-.booking-container { 
-    display: flex; flex-wrap: wrap; max-width: 1400px; margin: 0 auto;
-    background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; 
+/* Contenedor Principal: Formulario Izquierda | Mapa Derecha */
+.booking-container {
+    display: flex;
+    flex-direction: row;
+    height: 480px !important; /* Altura fija para estabilidad */
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #000;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #333;
 }
 
-.booking-form { flex: 1; padding: 40px; min-width: 320px; display: flex; flex-direction: column; gap: 20px; }
-
-.input-group, .input-field-group { display: flex; flex-direction: column; gap: 8px; position: relative; text-align: left; }
-.input-group label, .input-field-group label { color: var(--gold); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-
-input { 
-    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; 
-    background: #000; color: white; box-sizing: border-box; outline: none; transition: var(--transition);
+/* Formulario: Compacto y pegado arriba */
+.booking-form {
+    flex: 0 0 320px; /* Ancho fijo para el panel lateral */
+    padding: 20px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Todo hacia el tope superior */
+    background: #000;
 }
-input:focus { border-color: var(--gold); }
 
-/* Fila especial para Nombre/Apellido */
-.form-row { display: flex; gap: 15px; width: 100%; margin-bottom: 5px; }
-.form-row .input-group, .form-row .input-field-group { flex: 1; }
+#userNameDisplay {
+    text-shadow: 0 0 10px rgba(244, 208, 63, 0.4);
+    letter-spacing: 1px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
 
-/* Phone Wrapper */
-.phone-input-wrapper { display: flex; align-items: center; background: #000; border: 1px solid #444; border-radius: 8px; overflow: hidden; }
-.country-code { padding: 0 12px; color: var(--gold); font-weight: bold; border-right: 1px solid #333; }
-.phone-input-wrapper input { border: none !important; }
+.form-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin: 0 0 15px 0; /* Espaciado mínimo */
+}
 
-/* 6. TOAST (Notificaciones) */
+/* El Wrapper del Input para posicionar la mirilla */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* --- ESTILOS PARA AGRANDAR Y CENTRAR LA MIRILLA DE UBICACIÓN --- */
+
+/* 1. Aseguramos que el contenedor del input permita posicionamiento absoluto */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* 2. Estilos para el input de texto: necesitamos añadir espacio a la derecha */
+#pickupAddress {
+    padding-right: 45px !important;
+    box-sizing: border-box;
+}
+
+/* 3. Estilos para el botón/icono de mirilla */
+.btn-locate-small {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* 4. Agrandamos el icono SVG dorada */
+.btn-locate-small svg {
+    width: 24px;
+    height: 24px;
+    fill: #f4d03f;
+    transition: all 0.3s ease;
+}
+
+/* 5. Efecto opcional para que cambie al pasar el ratón */
+.btn-locate-small:hover svg {
+    fill: white;
+    transform: scale(1.1);
+}
+
+/* ÁREA DE RESULTADO PEQUEÑA */
+.price-display-compact {
+    display: none;
+    margin-top: 10px;
+}
+
+.fare-row-mini {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    gap: 15px;
+    background: #111;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+}
+
+.fare-label { font-size: 0.7rem; color: #888; font-family: 'Orbitron'; }
+.fare-amount-mini { font-size: 1.1rem; color: #f4d03f; font-weight: bold; }
+
+/* BOTONES PEQUEÑOS Y ELEGANTES */
+.btn-capi-compact {
+    width: 100%;
+    padding: 10px; /* Reducido */
+    background: #000;
+    color: #f4d03f;
+    border: 1.5px solid #f4d03f;
+    border-radius: 6px;
+    font-family: 'Orbitron';
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-capi-compact:hover {
+    background: #f4d03f;
+    color: #000;
+}
+
+/* Botón de Aceptar (Invertido para distinguir) */
+.accept-bg {
+    background: #f4d03f;
+    color: #000;
+}
+
+/* --- BOTÓN DE UBICACIÓN PEQUEÑO --- */
+.input-group .btn-locate { 
+    position: absolute; 
+    right: 12px; /* Espacio desde el borde derecho */
+    top: 55%; /* Centrado verticalmente */
+    transform: translateY(-50%);
+    background: #222; /* Fondo oscuro pequeño */
+    border: none; 
+    border-radius: 5px; /* Bordes ligeramente curvos */
+    padding: 6px; /* Muy pequeño */
+    cursor: pointer; 
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5; /* Por encima del input */
+}
+
+.input-group .btn-locate svg { 
+    fill: var(--gold); /* Dorado Exprezzr */
+    width: 16px; /* Icono pequeño */
+    height: 16px; 
+    transition: 0.3s ease;
+}
+
+.input-group .btn-locate:hover {
+    background: #333; /* Resalta al pasar el mouse */
+}
+
+.input-group .btn-locate:hover svg { 
+    fill: #fff; /* Icono blanco al pasar el mouse */
+    transform: scale(1.1); /* Ligero aumento */
+}
+
+/* Input con borde blanco y espacio a la derecha para el botón */
+.input-wrapper input {
+    width: 100%;
+    padding: 10px 45px 10px 12px;
+    background: #111;
+    border: 1px solid #ffffff; /* Borde blanco resaltado */
+    border-radius: 8px;
+    color: white;
+    font-size: 0.85rem;
+    outline: none;
+}
+.input-group input:focus { border-color: var(--gold); box-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
+
+/* ======================================================
+   BOTONES DE LA SECCIÓN DE RESERVAS (Corregido)
+   ====================================================== */
+
+/* Botón "Get Fare Estimate" y "Aceptar Ride" */
+.btn-get-fare, .btn-accept-ride {
+    width: 100%; 
+    padding: 14px; 
+    
+    /* FONDO NEGRO PREMIUM */
+    background-color: #000000 !important; 
+    
+    /* TEXTO Y BORDE DORADO CAPI */
+    color: #f4d03f !important; 
+    border: 2px solid #f4d03f !important; 
+    
+    border-radius: 50px; /* Formato Píldora */
+    font-family: 'Orbitron', sans-serif; 
+    font-weight: 700; 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    margin-top: 20px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    box-shadow: 0 4px 15px rgba(244, 208, 63, 0.1); 
+    box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+}
+
+/* EFECTO HOVER: Cambia a Dorado completo al pasar el mouse */
+.btn-get-fare:hover, .btn-accept-ride:hover { 
+    background-color: #f4d03f !important; /* Dorado completo */
+    color: #000000 !important; /* Texto Negro */
+    transform: translateY(-3px); 
+    box-shadow: 0 10px 20px rgba(244, 208, 63, 0.3); 
+}
+
+/* Asegurar que el input de Pickup no tape el botón de ubicación */
+#pickupAddress {
+    padding-right: 50px !important;
+}
+
+/* --- ESTILO PARA AUTOCOMPLETADO DE GOOGLE (Lujo CAPI) --- */
+.pac-container {
+    background-color: #111 !important; /* Fondo negro sólido */
+    border: 1px solid #444 !important;
+    border-radius: 0 0 12px 12px;
+    z-index: 10000 !important;
+    margin-top: 5px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    font-family: 'Inter', sans-serif !important;
+}
+
+.pac-item {
+    padding: 12px;
+    border-top: 1px solid #222 !important;
+    color: #fff !important; /* Letras blancas */
+    cursor: pointer;
+}
+
+.pac-item:hover {
+    background-color: #1a1a1a !important;
+}
+
+.pac-item-query {
+    color: #f4d03f !important; /* El texto principal en Dorado */
+    font-size: 14px;
+}
+
+.pac-matched {
+    color: #f4d03f !important;
+}
+
+.pac-icon {
+    display: none; /* Quitamos el icono de pin viejo de Google */
+}
+
+.hdpi .pac-logo:after {
+    display: none !important; /* Quita el "Powered by Google" para mantener el look Exprezzr */
+}
+
+/* Mapa: Ocupa el resto de la derecha */
+.map-container {
+    flex: 1;
+    height: 100% !important;
+    border-left: 1px solid #333;
+    background: #1a1a1a;
+    position: relative;
+}
+
+/* 6. TOAST & MODAL */
 .capi-toast {
-    position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-    background: var(--gold); color: #000; padding: 15px 30px; border-radius: 50px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 10000;
-    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-    opacity: 0; font-weight: 700;
+    position: fixed; top: 0; left: 50%; transform: translate(-50%, -100%);
+    background: var(--gold); color: #000; padding: 12px 24px; border-radius: 50px;
+    z-index: 10000; transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); pointer-events: none;
 }
-.capi-toast.show { top: 30px; opacity: 1; }
-.capi-toast.error { background: #ff4d4d; color: #fff; }
+.capi-toast.show { transform: translate(-50%, 30px); }
+/* Toast de error en rojo para avisar que ya existe */
+.capi-toast.error {
+    background: #e74c3c !important; /* Rojo intenso */
+    color: white !important;
+    border: 1px solid white;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
 
-/* 7. MODAL (Centrado Maestro) */
+/* REFUERZO DEL MODAL LOGIN */
 .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9); z-index: 9999;
-    display: none; justify-content: center; align-items: center; padding: 20px;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: none; /* Se activa con JS */
+    justify-content: center;
+    align-items: center;
 }
-.modal-overlay.active { display: flex !important; }
+
+.modal-overlay.active { display: flex; }
 
 .modal-card {
-    background: #000; padding: 40px; border-radius: 20px; border: 2px solid var(--gold);
-    width: 100%; max-width: 400px; text-align: center;
-    box-shadow: 0 0 30px rgba(244, 208, 63, 0.2);
+    background: #000;
+    border: 2px solid #f4d03f;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 380px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(244, 208, 63, 0.2);
 }
 
-/* 8. BUTTONS */
-.btn-primary-signup, .btn-primary {
-    width: 100%; padding: 14px; background: var(--gold); color: #000;
-    border: none; border-radius: 10px; font-weight: bold; text-transform: uppercase;
-    cursor: pointer; transition: var(--transition);
+.btn-close-modal {
+    position: absolute;
+    top: 15px; right: 20px;
+    background: none; border: none;
+    color: #888; font-size: 1.5rem; cursor: pointer;
 }
-.btn-primary-signup:hover { background: #fff; transform: translateY(-2px); }
 
-/* 9. MEDIA QUERIES (Responsivo) */
-@media (max-width: 768px) {
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.modal-input:focus { border-color: #f4d03f; outline: none; }
+
+/* 7. RESPONSIVO */
+@media (max-width: 850px) {
     header { flex-direction: column; padding: 15px; gap: 10px; }
-    nav { justify-content: center; flex-wrap: wrap; }
-    nav a { margin: 5px 10px; }
     .hero-info h1 { font-size: 2.2rem; }
-    .form-row { flex-direction: column; gap: 15px; }
+    .booking-container { display: block; height: auto !important; margin: 20px; }
+    .booking-form { flex: 1; width: 100%; padding: 30px; }
+    .map-container { height: 300px; border-left: none; border-top: 1px solid var(--border); }
+}
+/* ======================================================
+   FLEET SLIDER - RESTAURACIÓN DE CUERPO
+   ====================================================== */
+.autos-section {
+    padding: 60px 5%;
+    background-color: var(--black);
+    text-align: center;
+}
+
+.autos-section h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--gold);
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.slider-container {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal en móviles */
+    padding-bottom: 20px;
+}
+
+.autos-grid {
+    display: flex;
+    gap: 25px;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+/* Tarjeta de Auto Individual */
+.auto-card {
+    flex: 0 0 280px; /* Ancho fijo para cada tarjeta */
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 20px;
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auto-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(244, 208, 63, 0.1);
+}
+
+.auto-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain; /* Para que los autos no se deformen */
+    margin-bottom: 15px;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+}
+
+.auto-card h3 {
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 10px 0 5px 0;
+}
+
+.auto-card p {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0;
+}
+
+/* Scrollbar personalizada para el slider */
+.slider-container::-webkit-scrollbar {
+    height: 4px;
+}
+.slider-container::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 10px;
+}
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav span {
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(244, 208, 63, 0.3);
+}
+.divider {
+    margin: 25px 0;
+    border-top: 1px solid #333;
+    position: relative;
+    text-align: center;
+}
+
+.divider span {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000; /* Fondo negro para tapar la línea */
+    padding: 0 15px;
+    font-size: 0.7rem;
+    color: #888;
+    font-family: 'Orbitron', sans-serif;
 }

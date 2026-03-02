@@ -3,7 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const path = require('path');
-const bcrypt = require('bcrypt'); 
+const bcrypt = require('bcryptjs'); 
+const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library'); 
 
 const app = express();
@@ -11,6 +12,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // --- 1. MIDDLEWARE ---
 app.use(express.json());
+app.use(cors()); 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 2. CONEXIÓN MONGODB ATLAS ---
@@ -18,19 +20,20 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MONGODB: Connected to Atlas'))
   .catch(err => console.error('❌ MONGODB Error:', err));
 
-// --- 3. MODELO DE USUARIO ---
+// --- 3. MODELOS DE DATOS ---
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phone: { type: String, default: 'Pending' }, 
-    password: { type: String, required: true },
+    password: { type: String }, 
     imagen: { type: String },
+    role: { type: String, default: 'client' },
     fechaRegistro: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', userSchema);
 
-// --- 4. CONFIGURACIÓN DE CORREO (support@exprezzr.com) ---
+// --- 4. CONFIGURACIÓN DE CORREO (NODEMAILER) ---
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
@@ -43,98 +46,87 @@ const transporter = nodemailer.createTransport({
 
 // --- 5. RUTAS DE AUTENTICACIÓN ---
 
-// Registro Manual (CORREGIDO PARA EVITAR PANTALLA BLANCA)
-app.post('/register', async (req, res) => {
+// LOGIN MANUAL
+app.post('/login', async (req, res) => {
     try {
-        const { firstName, lastName, email, phone, password } = req.body;
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ error: "User not found" });
+        if (!user.password) return res.status(400).json({ error: "Please use Google Login" });
 
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ error: "Email already registered" });
-        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = new User({
-            firstName,
-            lastName,
-            email,
-            phone,
-            password: hashedPassword
-        });
-
-        await newUser.save();
-
-        // Enviar Email (en segundo plano)
-        const mailOptions = {
-            from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Welcome to CAPI by Exprezzr!',
-            html: `<div style="background:#000;color:#fff;padding:20px;text-align:center;border:2px solid #f4d03f;">
-                   <h1 style="color:#f4d03f;">WELCOME TO CAPI</h1>
-                   <p>Experience the best luxury transportation.</p></div>`
-        };
-        transporter.sendMail(mailOptions).catch(e => console.log("Email error:", e));
-
-        // RESPUESTA JSON OBLIGATORIA
-        return res.status(201).json({ message: "Account created successfully!" });
-
+        res.json({ user });
     } catch (err) {
-        console.error("❌ Register Error:", err);
-        return res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Server error" });
     }
 });
 
-// Autenticación con Google
-app.post('/auth/google', async (req, res) => {
+// FORGOT PASSWORD (DINÁMICO PARA LOCAL Y CLOUD)
+app.post('/forgot-password', async (req, res) => {
     try {
-        const { token } = req.body;
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        
-        const { given_name, family_name, email, picture } = ticket.getPayload();
-        let user = await User.findOne({ email });
-        
-        if (!user) {
-            user = new User({
-                firstName: given_name,
-                lastName: family_name,
-                email: email,
-                password: 'google-authenticated-user-' + Math.random(), 
-                imagen: picture,
-                phone: 'Pending'
-            });
-            await user.save();
-        }
-        res.json({ message: "Success", user });
-    } catch (error) {
-        res.status(400).json({ error: "Invalid Token" });
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ error: "No account found" });
+
+        // LOGICA DINÁMICA: Detecta si es HTTPS (Cloud) o HTTP (Local) y el host actual
+        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+        const host = req.get('host');
+        const resetLink = `${protocol}://${host}/reset-password?email=${email}`;
+
+        const mailOptions = {
+            from: `"CAPI Security" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Reset Your CAPI Password',
+            html: `
+                <div style="background:#000; color:#fff; padding:30px; border:2px solid #f4d03f; text-align:center; font-family:sans-serif;">
+                    <img src="https://tu-url-de-logo.com/logo.png" alt="Exprezzr" style="height:50px;">
+                    <h1 style="color:#f4d03f; font-family:'Orbitron';">PASSWORD RECOVERY</h1>
+                    <p>Hello ${user.firstName}, click the button below to set a new manual password.</p>
+                    <a href="${resetLink}" style="display:inline-block; padding:15px 25px; background:#f4d03f; color:#000; text-decoration:none; font-weight:bold; border-radius:50px; margin-top:20px;">RESET PASSWORD</a>
+                    <p style="margin-top:20px; font-size:0.8rem; color:#888;">This link belongs to Exprezzr LLC Security.</p>
+                </div>`
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.json({ message: "Recovery email sent!" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to send email." });
     }
 });
 
-// Actualizar Teléfono
-app.post('/update-phone', async (req, res) => {
-    const { email, phone } = req.body;
+// ACTUALIZAR CONTRASEÑA (SET PASSWORD)
+app.post('/set-password', async (req, res) => {
     try {
-        const user = await User.findOneAndUpdate({ email }, { phone }, { new: true });
-        if (user) res.status(200).json({ message: "Phone updated", user });
-        else res.status(404).json({ error: "User not found" });
-    } catch (error) {
-        res.status(500).json({ error: "Error updating phone" });
+        const { email, newPassword } = req.body;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        await User.findOneAndUpdate({ email }, { password: hashedPassword });
+        res.json({ message: "Password updated successfully!" });
+    } catch (err) {
+        res.status(500).json({ error: "Error updating password" });
     }
 });
 
-// --- 6. RUTAS DE PÁGINAS ---
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+// --- 6. RUTAS DE PÁGINAS (HTML) ---
+app.get('/reset-password', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
+});
 
-// --- 7. ARRANQUE ---
-const PORT = process.env.PORT || 3000;
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// --- 7. INICIO DEL SERVIDOR ---
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 CAPI SERVER ACTIVE: PORT ${PORT}`);
+    console.log(`🚀 CAPI Server running on port ${PORT}`);
+    console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
 });

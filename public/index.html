@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="google-site-verification" content="googlef3ec2cf8863d6931.html">
     <title>CAPI by Exprezzr - Luxury Ride</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -15,38 +15,50 @@
             <img src="images/logo-exprezzr.png" alt="Logo Exprezzr">
             <span class="logo-text">TAXI APP</span>
         </div>
-        <nav>
+        <nav id="mainNav">
             <a href="/signup" class="btn-sistema">Sign Up</a>
-            
-            <a href="/login" class="nav-link">Login</a>
-            
+            <a href="javascript:void(0)" onclick="openLoginModal()" class="nav-link">Login</a>
             <a href="/services">Services</a>
             <a href="/support">Support</a>
-            <a href="/about">About</a>
         </nav>
     </header>
 
     <section class="booking-section">
         <div class="booking-container">
             <div class="booking-form">
-                <h2>Book a Ride</h2>
-                
+                <div id="userGreetingArea" style="margin-bottom: 15px; display: none;">
+                    <p style="font-size: 0.8rem; color: #888; margin: 0; font-family: 'Orbitron';">WELCOME BACK,</p>
+                    <h3 id="userNameDisplay" style="color: #f4d03f; margin: 0; font-family: 'Orbitron'; font-size: 1.2rem;"></h3>
+                </div>
+
+                <h2 class="form-title" id="formMainTitle">Book a Ride</h2>
+
                 <div class="input-group">
-                    <input type="text" id="origin" placeholder="Pickup location...">
-                    <button id="locateBtn" class="btn-locate" title="Get my location">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 18px; fill: #555;">
-                            <path d="M256 0c17.7 0 32 14.3 32 32V66.7C368.4 80.1 431.9 143.6 445.3 224H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H445.3C431.9 368.4 368.4 431.9 256 445.3V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.3C143.6 431.9 80.1 368.4 66.7 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H66.7C80.1 143.6 143.6 80.1 224 66.7V32c0-17.7 14.3-32 32-32zM128 256a128 128 0 1 0 256 0 128 128 0 1 0 -256 0zm128-80a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
-                        </svg>
-                    </button>
+                    <label>Pickup</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="pickupAddress" placeholder="Enter Pickup Address">
+                        <button type="button" class="btn-locate-small" id="btnLocate">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="destination" placeholder="Destination (e.g., Boston)">
+                    <label>Destination</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="destination" placeholder="Where to?">
+                    </div>
                 </div>
 
-                <button id="calcFareBtn" class="btn-sistema" style="width: 100%; margin-top: 10px;">Get Fare Estimate</button>
-                
-                <div id="priceResult" class="price-result"></div>
+                <button id="calcFareBtn" class="btn-capi-compact">Get Fare Estimate</button>
+
+                <div id="priceDisplayArea" style="display: none; margin-top: 15px;">
+                    <div class="fare-row-mini">
+                        <span class="fare-label">ESTIMATE:</span>
+                        <span id="priceResult" class="fare-amount-mini">$0.00</span>
+                    </div>
+                    <button id="acceptRideBtn" class="btn-capi-compact" style="background: #f4d03f; color: #000;">Accept Ride</button>
+                </div>
             </div>
 
             <div id="map" class="map-container"></div>
@@ -57,9 +69,8 @@
         <div class="hero-info">
             <h1>TRAVEL WITH <span>STYLE</span></h1>
             <p>The most advanced transportation app in Shrewsbury. <br> Safety and luxury in every journey.</p>
-            
             <div style="margin-top: 20px;">
-                <a href="/signup" class="btn-gold-large">Join Exprezzr LLC</a>
+                <a href="/signup" class="btn-primary-signup" style="text-decoration: none; display: inline-block;">Join Exprezzr LLC</a>
             </div>
         </div>
     </section>
@@ -68,51 +79,13 @@
         <h2>Our Fleet</h2>
         <div class="slider-container">
             <div class="autos-grid" id="carSlider">
-                <div class="auto-card">
-                    <img src="images/BMW i73.png" alt="BMW i7">
-                    <h3>Executive</h3>
-                    <p>BMW i7</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/BMW-X6.png" alt="BMW X6">
-                    <h3>Luxury SUV</h3>
-                    <p>BMW X6</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/Cadillac-CT5.png" alt="Cadillac CT5">
-                    <h3>Premium Sedan</h3>
-                    <p>Cadillac CT5</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/cadilla-iql copy.png" alt="Cadillac IQL">
-                    <h3>Premium SUV</h3>
-                    <p>Cadillac IQL</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/crv.png" alt="Honda CR-V">
-                    <h3>Standard SUV</h3>
-                    <p>Honda CR-V</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/Lexus 600.png" alt="Lexus LX 600">
-                    <h3>Luxury SUV</h3>
-                    <p>Lexus LX 600</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/suburban.png" alt="Chevrolet Suburban">
-                    <h3>XL SUV</h3>
-                    <p>Chevrolet Suburban</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/toyota-camry.png" alt="Toyota Camry">
-                    <h3>Standard Sedan</h3>
-                    <p>Toyota Camry</p>
-                </div>
-                <div class="auto-card">
-                    <img src="images/trim-2025-suburban-lt.png" alt="Suburban LT">
-                    <h3>XL SUV Premium</h3>
-                    <p>Suburban LT 2025</p>
-                </div>
+                <div class="auto-card"><img src="images/BMW i73.png" alt="BMW i7"><h3>Executive</h3><p>BMW i7</p></div>
+                <div class="auto-card"><img src="images/BMW-X6.png" alt="BMW X6"><h3>Luxury SUV</h3><p>BMW X6</p></div>
+                <div class="auto-card"><img src="images/Cadillac-CT5.png" alt="Cadillac CT5"><h3>Premium Sedan</h3><p>Cadillac CT5</p></div>
+                <div class="auto-card"><img src="images/cadilla-iql copy.png" alt="Cadillac IQL"><h3>Premium SUV</h3><p>Cadillac IQL</p></div>
+                <div class="auto-card"><img src="images/crv.png" alt="Honda CR-V"><h3>Standard SUV</h3><p>Honda CR-V</p></div>
+                <div class="auto-card"><img src="images/Lexus 600.png" alt="Lexus LX 600"><h3>Luxury SUV</h3><p>Lexus LX 600</p></div>
+                <div class="auto-card"><img src="images/suburban.png" alt="Chevrolet Suburban"><h3>XL SUV</h3><p>Chevrolet Suburban</p></div>
             </div>
         </div>
     </section>
@@ -121,8 +94,240 @@
         <p>&copy; 2026 CAPI by Exprezzr LLC - Ryan Ruffen. All rights reserved.</p>
     </footer>
 
-    <script src="js/scripts.js"></script>
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <button type="button" class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+            
+            <div class="logo-container" style="text-align: center; margin-bottom: 15px;">
+                <img src="images/logo-exprezzr.png" alt="Logo" style="height: 50px;">
+                <h2 style="font-family: 'Orbitron'; color: #f4d03f; font-size: 1.1rem; margin-top: 5px;">CAPI LOGIN</h2>
+            </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAw_gxrw_-wXM3o8LH9MJ7hHZeRQpJEn-s&callback=initMap&libraries=places" async defer></script>
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <div id="g_id_onload" 
+                     data-client_id="139793933381-76aoe2ct7h3e317qj6dvoh9iotb8tb4t.apps.googleusercontent.com" 
+                     data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-width="100%"></div>
+            </div>
+
+            <div class="divider"><span>OR EMAIL</span></div>
+
+            <form id="modalLoginForm" onsubmit="handleManualLogin(event)">
+    <input type="email" id="modalEmail" placeholder="Email Address" required class="modal-input">
+    <input type="password" id="modalPassword" placeholder="Password" required class="modal-input">
+    
+    <div style="text-align: right; margin-bottom: 10px;">
+        <a href="javascript:void(0)" onclick="forgotPassword()" style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.7rem; text-decoration: none;">FORGOT PASSWORD?</a>
+    </div>
+
+    <button type="submit" class="btn-primary-signup" style="width: 100%;">ENTER</button>
+</form>
+        </div>
+    </div>
+
+    <script>
+        // --- VARIABLES GLOBALES ---
+        let map, directionsService, directionsDisplay;
+
+        // --- MANEJO DEL MODAL ---
+        function openLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target == modal) closeLoginModal();
+        }
+
+        // --- LÓGICA DE AUTENTICACIÓN ---
+
+        // Éxito en Login (Manual o Google)
+        function loginSuccess(user) {
+            localStorage.setItem('capi_user', JSON.stringify(user));
+            closeLoginModal();
+            updateUI(user);
+        }
+
+        // Login Manual
+        async function handleManualLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('modalEmail').value;
+            const password = document.getElementById('modalPassword').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    loginSuccess(data.user);
+                } else {
+                    alert(data.error || "Login failed");
+                }
+            } catch (error) {
+                alert("Server error. Try again later.");
+            }
+        }
+
+        // Login Google
+        function handleCredentialResponse(response) {
+            fetch('/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.isNewUser === false) {
+                    loginSuccess(data.user);
+                } else if (data.isNewUser === true) {
+                    // Si es nuevo, lo mandamos a signup para que complete el registro (teléfono)
+                    alert("Account not found. Redirecting to Sign Up...");
+                    window.location.href = "/signup";
+                } else {
+                    alert(data.error || "Google auth failed");
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+
+        // Forgot Password
+async function forgotPassword() {
+    const email = document.getElementById('modalEmail').value;
+    
+    if (!email) {
+        alert("Please enter your email address first so we know where to send the link.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert("Success! Check your email (ryanruffen@gmail.com) for the reset link.");
+        } else {
+            alert(data.error || "Something went wrong.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Connection error. Is the server running?");
+    }
+}
+
+        // --- ACTUALIZACIÓN DE INTERFAZ ---
+        function updateUI(user) {
+            // Saludo en el Formulario
+            const greeting = document.getElementById('userGreetingArea');
+            const nameDisp = document.getElementById('userNameDisplay');
+            if (greeting && nameDisp) {
+                greeting.style.display = 'block';
+                nameDisp.innerText = user.firstName.toUpperCase();
+                document.getElementById('formMainTitle').innerText = "Where to?";
+            }
+
+            // Nombre en el Navbar
+            const nav = document.getElementById('mainNav');
+            if (nav) {
+                nav.innerHTML = `
+                    <span style="color:#f4d03f; font-family:'Orbitron'; font-weight:bold; font-size:12px; margin-right:15px;">WELCOME, ${user.firstName.toUpperCase()}</span>
+                    <a href="javascript:void(0)" onclick="logout()" class="btn-sistema" style="color:#888 !important; border-color:#444;">LOGOUT</a>
+                    <a href="/services">Services</a>
+                    <a href="/support">Support</a>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('capi_user');
+            window.location.reload();
+        }
+
+        // --- GOOGLE MAPS ---
+        function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer({
+                polylineOptions: { strokeColor: "#f4d03f", strokeWeight: 5 }
+            });
+
+            const mapOptions = {
+                center: { lat: 42.2959, lng: -71.7128 },
+                zoom: 14,
+                disableDefaultUI: true
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            directionsDisplay.setMap(map);
+
+            const options = { componentRestrictions: { country: "us" } };
+            new google.maps.places.Autocomplete(document.getElementById("pickupAddress"), options);
+            new google.maps.places.Autocomplete(document.getElementById("destination"), options);
+        }
+
+        // --- EVENTOS AL CARGAR ---
+        window.addEventListener('load', () => {
+            // Cargar sesión si existe
+            const savedUser = localStorage.getItem('capi_user');
+            if (savedUser) updateUI(JSON.parse(savedUser));
+
+            // Botón de geolocalización
+            document.getElementById('btnLocate')?.addEventListener('click', () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                        map.setCenter(pos);
+                        const geocoder = new google.maps.Geocoder();
+                        geocoder.geocode({ location: pos }, (results, status) => {
+                            if (status === "OK" && results[0]) {
+                                document.getElementById("pickupAddress").value = results[0].formatted_address;
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Botón de Fare Estimate
+            document.getElementById('calcFareBtn').addEventListener('click', () => {
+                const start = document.getElementById('pickupAddress').value;
+                const end = document.getElementById('destination').value;
+                if (!start || !end) return alert("Please enter addresses");
+
+                directionsService.route({
+                    origin: start,
+                    destination: end,
+                    travelMode: 'DRIVING'
+                }, (response, status) => {
+                    if (status === 'OK') {
+                        directionsDisplay.setDirections(response);
+                        document.getElementById('priceResult').innerText = "$" + (Math.random() * 30 + 15).toFixed(2);
+                        document.getElementById('calcFareBtn').style.display = 'none';
+                        document.getElementById('priceDisplayArea').style.display = 'block';
+                    }
+                });
+            });
+
+            // Parámetro para abrir login desde Signup
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('openLogin') === 'true') openLoginModal();
+        });
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAx-p4vgsvBvFmG9JCT5nVisr4xMF7jLz0&libraries=places&callback=initMap" async defer></script>
 </body>
 </html>
