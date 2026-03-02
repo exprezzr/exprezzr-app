@@ -84,7 +84,7 @@ app.post('/forgot-password', async (req, res) => {
         const resetLink = `${protocol}://${host}/reset-password?email=${email}`;
 
         const mailOptions = {
-            from: `"CAPI Security" <${process.env.EMAIL_USER}>`,
+            from: `"Exprezzr Support" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: 'Reset Your CAPI Password',
             html: `
