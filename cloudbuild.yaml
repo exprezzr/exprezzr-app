@@ -1,23 +1,21 @@
 steps:
-  # 1. Construir la imagen de la app
+  # 1. Construir la imagen
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/taxi-app', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app', '.']
 
-  # 2. Empujarla al registro de Google
+  # 2. Subir a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/taxi-app']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app']
 
   # 3. Desplegar en Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
-- 'run'
+      - 'run'
       - 'deploy'
       - 'exprezzr-app'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/taxi-app'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app'
       - '--region'
-      - 'us-central1'  # <--- CAMBIA ESTO (antes decía northamerica-northeast1)
+      - 'us-central1'
       - '--allow-unauthenticated'
-options:
-  logging: CLOUD_LOGGING_ONLY
