@@ -6,6 +6,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs'); 
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library'); 
+const { sendResetEmail } = require('./email/mailer');
 
 const app = express();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -23,20 +24,6 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 console.log('✅ FIRESTORE: Conectado con éxito');
-
-// --- 3. CONFIGURACIÓN DE CORREO ---
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // false para puerto 587
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false // Esto ayuda si hay problemas de certificados en el servidor
-  }
-});
 
 // --- 4. RUTAS DE AUTENTICACIÓN (API) ---
 
@@ -135,24 +122,14 @@ app.post('/forgot-password', async (req, res) => {
         const { email } = req.body;
         const doc = await db.collection('users').doc(email).get();
         if (!doc.exists) return res.status(404).json({ error: "No account found" });
+        
+        const resetLink = `https://${req.get('host')}/reset-password?email=${email}`;
 
-        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-        const host = req.get('host');
-        const resetLink = `${protocol}://${host}/reset-password?email=${email}`;
-
-        await transporter.sendMail({
-            from: `"CAPI Support" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Reset Your Password',
-            html: `<div style="text-align:center; border:2px solid #f4d03f; padding:20px; background:#000; color:#fff;">
-                   <h2 style="color:#f4d03f;">PASSWORD RESET</h2>
-                   <a href="${resetLink}" style="color:#000; background:#f4d03f; padding:10px 20px; text-decoration:none; font-weight:bold;">RESET NOW</a>
-                   </div>`
-        });
-        res.json({ message: "Email sent!" });
+        await sendResetEmail(email, resetLink);
+        res.json({ message: "Email sent successfully!" });
     } catch (err) {
-        console.error("CRITICAL SMTP ERROR:", err);
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+        console.error("DETAILED ERROR IN SERVER.JS:", err);
+        res.status(500).json({ error: "Server failed to send email." });
     }
 });
 
@@ -175,31 +152,4 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 CAPI Server running on port ${PORT}`);
-});
-
-// server.js
-require('dotenv').config();
-const express = require('express');
-const { sendResetEmail } = require('./email/mailer'); // Importa desde tu carpeta email
-
-// ... (resto de tus configuraciones de Express y Firebase)
-
-app.post('/forgot-password', async (req, res) => {
-    try {
-        const { email } = req.body;
-        // 1. Verificar si el usuario existe en Firestore
-        const doc = await db.collection('users').doc(email).get();
-        if (!doc.exists) return res.status(404).json({ error: "No account found" });
-
-        // 2. Construir el link (Cloud Run usa https por defecto)
-        const resetLink = `https://${req.get('host')}/reset-password?email=${email}`;
-
-        // 3. Enviar correo usando el módulo externo
-        await sendResetEmail(email, resetLink);
-        
-        res.json({ message: "Email sent successfully!" });
-    } catch (err) {
-        console.error("DETAILED ERROR IN SERVER.JS:", err); // Esto aparecerá en los logs de Cloud Run
-        res.status(500).json({ error: "Server failed to send email." });
-    }
 });
