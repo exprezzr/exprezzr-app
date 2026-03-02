@@ -158,3 +158,22 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 CAPI Server running on port ${PORT}`);
 });
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: process.env.SMTP_PORT || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER, // support@exprezzr.com
+    pass: process.env.SMTP_PASS, // Tu App Password
+  },
+});
+
+async function verifyConnection() {
+  try {
+    await transporter.verify();
+    console.log("✅ Conexión SMTP exitosa.");
+  } catch (error) {
+    console.error("❌ Error en SMTP:", error);
+  }
+}
