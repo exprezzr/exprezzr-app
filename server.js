@@ -45,9 +45,12 @@ app.post(['/login', '/auth/login'], async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
 
         if (match) {
-            res.json({ success: true, message: "Bienvenido" });
+            // remove password hash before sending back
+            const safeUser = { ...user };
+            delete safeUser.password;
+            res.json({ success: true, message: "Bienvenido", user: safeUser });
         } else {
-            res.status(401).send("Contraseña incorrecta");
+            res.status(401).json({ error: "Contraseña incorrecta" });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -55,26 +58,85 @@ app.post(['/login', '/auth/login'], async (req, res) => {
 });
 
 // 2. GOOGLE LOGIN
+//    Now the endpoint accepts an ID token from the client, verifies
+//    it using Google's OAuth2 client, then creates/updates the user
+//    document and returns the user object along with a flag indicating
+//    if the account was new.  This matches what the front‑end code expects.
+const { OAuth2Client } = require('google-auth-library');
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '139793933381-76aoe2ct7h3e317qj6dvoh9iotb8tb4t.apps.googleusercontent.com';
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
 app.post('/auth/google', async (req, res) => {
     try {
-        const { email, name, photoURL } = req.body;
-        const userRef = db.collection('users').doc(email);
-        
-        // Guardar o actualizar usuario al entrar con Google
-        await userRef.set({
-            email,
-            name,
-            photoURL,
-            lastLogin: new Date()
-        }, { merge: true });
+        const { token } = req.body; // JWT credential from GSI
+        const ticket = await googleClient.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const payload = ticket.getPayload();
+        const { email, name, picture } = payload;
 
-        res.json({ success: true, message: "Google Login exitoso" });
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
+        const isNew = !doc.exists;
+
+        const userData = {
+            email,
+            firstName: name.split(' ')[0] || '',
+            lastName: name.split(' ').slice(1).join(' ') || '',
+            photoURL: picture,
+            lastLogin: new Date()
+        };
+        await userRef.set(userData, { merge: true });
+
+        // respond with the user info (without any sensitive data)
+        res.json({ success: true, user: userData, isNewUser: isNew });
     } catch (error) {
+        console.error('Google auth error', error);
         res.status(500).json({ error: "Error en Google Auth" });
     }
 });
 
-// 3. OLVIDÉ MI CONTRASEÑA
+// 3. REGISTRO MANUAL
+app.post('/auth/register', async (req, res) => {
+    try {
+        const { firstName, lastName, email, phone, password } = req.body;
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
+        if (doc.exists) {
+            return res.status(400).json({ error: 'Usuario ya existe' });
+        }
+
+        const hashed = await bcrypt.hash(password, 10);
+        const newUser = {
+            firstName,
+            lastName,
+            email,
+            phone,
+            password: hashed,
+            createdAt: new Date()
+        };
+        await userRef.set(newUser);
+        const safeUser = { ...newUser };
+        delete safeUser.password;
+        res.json({ success: true, user: safeUser });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// helper route used by signup page when a Google user adds a phone number
+app.post('/auth/update-phone', async (req, res) => {
+    try {
+        const { email, phone } = req.body;
+        await db.collection('users').doc(email).update({ phone });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 4. OLVIDÉ MI CONTRASEÑA
 app.post('/auth/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;

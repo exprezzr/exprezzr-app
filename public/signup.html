@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sign Up - CAPI by Exprezzr</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://accounts.google.com/gsi/client"a async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         /* REFUERZO DE DISEÑO PARA MÓVILES (Pégalo aquí o en styles.css) */
         .modal-overlay {
@@ -121,8 +121,11 @@
                 const data = await res.json();
 
                 if (res.ok) {
+                    // automatically store the user so the home page reflects the login
+                    if (data.user) localStorage.setItem('capi_user', JSON.stringify(data.user));
                     showCapiToast("Account created successfully!");
-                    setTimeout(() => window.location.href = '/index.html?openLogin=true', 2500);
+                    // redirect to the map/home page instead of forcing another login
+                    setTimeout(() => window.location.href = '/index.html', 2500);
                 } else {
                     showCapiToast(data.error || "Error", true);
                 }
