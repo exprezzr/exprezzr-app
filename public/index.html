@@ -178,6 +178,7 @@
         function loginSuccess(user) {
             localStorage.setItem('capi_user', JSON.stringify(user));
             closeLoginModal();
+            showCapiToast('Welcome back!', false, 'success');
             updateUI(user);
         }
 
@@ -200,6 +201,10 @@
             const phone = document.getElementById('supportPhone').value;
             const email = document.getElementById('supportEmail').value;
             const comment = document.getElementById('supportComment').value;
+
+            // close modal immediately so toast is visible on page
+            closeSupportModal();
+
             try {
                 const res = await fetch('/support', {
                     method: 'POST',
@@ -207,8 +212,7 @@
                     body: JSON.stringify({ name, lastName, phone, comment, email })
                 });
                 if (res.ok) {
-                    showCapiToast('Message sent, we will contact you soon');
-                    closeSupportModal();
+                    showCapiToast('Message sent, we will contact you soon', false, 'success');
                 } else {
                     const data = await res.json();
                     showCapiToast(data.error || 'Failed to send', true);
@@ -220,6 +224,7 @@
 
         async function handleManualLogin(event) {
             event.preventDefault();
+            closeLoginModal();
             const email = document.getElementById('modalEmail').value;
             const password = document.getElementById('modalPassword').value;
 
@@ -242,6 +247,7 @@
 
         // REVISIÓN: Integración con la ruta /auth/google de Firestore
         function handleCredentialResponse(response) {
+            closeLoginModal();
             fetch('/auth/google', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -264,9 +270,11 @@
         async function forgotPassword() {
             const email = document.getElementById('modalEmail').value;
             if (!email) {
+                closeLoginModal();
                 showCapiToast("Please enter your email address first.", true);
                 return;
             }
+            closeLoginModal();
             try {
                 const response = await fetch('/auth/forgot-password', {
                     method: 'POST',
@@ -275,8 +283,7 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    showCapiToast("Success! Check your email for the reset link.");
-                    closeLoginModal();
+                    showCapiToast("Success! Check your email for the reset link.", false, 'success');
                 } else {
                     showCapiToast(data.error || "Something went wrong.", true);
                 }
@@ -285,12 +292,15 @@
             }
         }
 
-        // toast helper (copied from signup page)
-        function showCapiToast(msg, isError = false) {
+        // toast helper (copied from signup page and extended)
+        // type can be 'info' (default), 'success', or 'error'
+        function showCapiToast(msg, isError = false, type = 'info') {
             const toast = document.getElementById('capiToast');
             const message = document.getElementById('toastMessage');
             message.innerText = msg;
-            toast.className = isError ? 'capi-toast show error' : 'capi-toast show';
+            toast.className = 'capi-toast show';
+            if (type === 'error' || isError) toast.classList.add('error');
+            else if (type === 'success') toast.classList.add('success');
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 

@@ -93,11 +93,14 @@
         let tempUser = null;
 
         // Función para mostrar alertas doradas
-        function showCapiToast(msg, isError = false) {
+        // acepta tipo: 'info' (default), 'success' o 'error'
+        function showCapiToast(msg, isError = false, type = 'info') {
             const toast = document.getElementById('capiToast');
             const message = document.getElementById('toastMessage');
             message.innerText = msg;
-            toast.className = isError ? 'capi-toast show error' : 'capi-toast show';
+            toast.className = 'capi-toast show';
+            if (type === 'error' || isError) toast.classList.add('error');
+            else if (type === 'success') toast.classList.add('success');
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
@@ -123,7 +126,7 @@
                 if (res.ok) {
                     // automatically store the user so the home page reflects the login
                     if (data.user) localStorage.setItem('capi_user', JSON.stringify(data.user));
-                    showCapiToast("Account created successfully!");
+                    showCapiToast("Account created successfully!", false, 'success');
                     // redirect to the map/home page instead of forcing another login
                     setTimeout(() => window.location.href = '/index.html', 2500);
                 } else {
@@ -156,7 +159,7 @@
                 });
 
                 if (res.ok) {
-                    showCapiToast("Profile complete! Welcome to Exprezzr.");
+                    showCapiToast("Profile complete! Welcome to Exprezzr.", false, 'success');
                     localStorage.setItem('capi_user', JSON.stringify(tempUser));
                     // close before redirect so modal isn't lingering
                     closePhoneModal();
@@ -188,7 +191,7 @@ function handleCredentialResponse(response) {
             } else {
                 // Usuario ya existe, loguear directamente
                 localStorage.setItem('capi_user', JSON.stringify(data.user));
-                showCapiToast("Welcome back!");
+                showCapiToast("Welcome back!", false, 'success');
                 setTimeout(() => window.location.href = '/index.html', 1500);
             }
         } else {
