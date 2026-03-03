@@ -118,23 +118,26 @@ app.post('/update-phone', async (req, res) => {
 
 // E. RECUPERAR / SETEAR CONTRASEÑA
 app.post('/auth/forgot-password', async (req, res) => {
-    const { email } = req.body;
     try {
-        // 1. Verificar si el usuario existe en Firestore
+        const { email } = req.body;
+        if (!email) throw new Error("Por favor, ingresa tu correo primero.");
+
+        // 1. Verificamos si el usuario existe en Firestore
         const userRef = db.collection('users').doc(email);
         const doc = await userRef.get();
 
         if (!doc.exists) {
-            return res.status(404).send('El usuario no existe');
+            throw new Error("El correo no está registrado en Capi App.");
         }
 
-        // 2. Llamar a la función que importaste en la línea 9
-        await sendResetEmail(email);
+        // 2. Si existe, disparamos el correo de recuperación
+        const resetLink = `${req.protocol}://${req.get('host')}/reset-password?email=${encodeURIComponent(email)}`;
+        await sendResetEmail(email, resetLink);
 
-        res.status(200).send('Correo de recuperación enviado');
+        res.status(200).json({ message: "¡Correo enviado! Revisa tu bandeja de entrada." });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al enviar el email');
+        console.error("Error en el proceso:", error.message);
+        res.status(400).json({ error: `Error: ${error.message}` });
     }
 });
 
@@ -158,22 +161,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 CAPI Server running on port ${PORT}`);
 });
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: process.env.SMTP_PORT || 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER, // support@exprezzr.com
-    pass: process.env.SMTP_PASS, // Tu App Password
-  },
-});
-
-async function verifyConnection() {
-  try {
-    await transporter.verify();
-    console.log("✅ Conexión SMTP exitosa.");
-  } catch (error) {
-    console.error("❌ Error en SMTP:", error);
-  }
-}
