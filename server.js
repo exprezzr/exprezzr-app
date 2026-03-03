@@ -34,7 +34,8 @@ app.post('/auth/forgot-password', async (req, res) => {
 
         if (!doc.exists) return res.status(404).json({ error: "Email not found" });
 
-        const resetLink = `https://${req.get('host')}/reset-password?email=${encodeURIComponent(email)}`;
+        // ✅ Correcto para producción
+        const resetLink = `https://${req.get('host')}/reset-password?email=${encodeURIComponent(email)}`; 
         await sendResetEmail(email, resetLink);
 
         res.json({ message: "Email de recuperación enviado con éxito." });
@@ -44,7 +45,7 @@ app.post('/auth/forgot-password', async (req, res) => {
 });
 
 // B. ACTUALIZAR CONTRASEÑA (DESDE EL LINK)
-app.post('/set-password', async (req, res) => {
+app.post('/auth/set-password', async (req, res) => {    
     try {
         const { email, newPassword } = req.body;
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -65,5 +66,3 @@ app.listen(PORT, '0.0.0.0', () => {
         .then(() => console.log('✅ FIRESTORE: Conectado con éxito'))
         .catch(e => console.log('❌ FIRESTORE: Revisa tu gcloud login'));
 });
-
-// Update for production v2
