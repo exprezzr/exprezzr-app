@@ -1,9 +1,8 @@
 require('dotenv').config();
-const bcrypt = require('bcryptjs'); 
 const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
-const bcrypt = require('bcryptjs'); 
+const bcrypt = require('bcryptjs'); // ✅ SOLO UNA VEZ AQUÍ
 const cors = require('cors');
 const { sendResetEmail } = require('./email/mailer');
 
@@ -14,39 +13,18 @@ app.use(express.json());
 app.use(cors()); 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- server.js (Versión para Producción) ---
+// INITIALIZE FIREBASE
 if (!admin.apps.length) {
     admin.initializeApp({
-        // En Cloud Run, esto detecta automáticamente el proyecto capi-app-84c75
         credential: admin.credential.applicationDefault()
     });
 }
 const db = admin.firestore();
-console.log('✅ FIRESTORE: Conectado automáticamente en Cloud Run');
 
 // --- RUTAS DE AUTENTICACIÓN ---
 
-// A. RECUPERAR CONTRASEÑA (ENVÍO DE EMAIL)
-app.post('/auth/forgot-password', async (req, res) => {
-    try {
-        const { email } = req.body;
-        const userRef = db.collection('users').doc(email);
-        const doc = await userRef.get();
-
-        if (!doc.exists) return res.status(404).json({ error: "Email not found" });
-
-        // ✅ Correcto para producción
-        const resetLink = `https://${req.get('host')}/reset-password?email=${encodeURIComponent(email)}`; 
-        await sendResetEmail(email, resetLink);
-
-        res.json({ message: "Email de recuperación enviado con éxito." });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// C. INICIO DE SESIÓN (LOGIN)
-app.post('/auth/login', async (req, res) => {
+// 1. LOGIN (Acepta tanto /login como /auth/login)
+app.post(['/login', '/auth/login'], async (req, res) => {
     try {
         const { email, password } = req.body;
         const userRef = db.collection('users').doc(email);
@@ -67,34 +45,58 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-// B. ACTUALIZAR CONTRASEÑA (DESDE EL LINK)
+// 2. GOOGLE LOGIN
+app.post('/auth/google', async (req, res) => {
+    try {
+        const { email, name, photoURL } = req.body;
+        const userRef = db.collection('users').doc(email);
+        
+        // Guardar o actualizar usuario al entrar con Google
+        await userRef.set({
+            email,
+            name,
+            photoURL,
+            lastLogin: new Date()
+        }, { merge: true });
+
+        res.json({ success: true, message: "Google Login exitoso" });
+    } catch (error) {
+        res.status(500).json({ error: "Error en Google Auth" });
+    }
+});
+
+// 3. OLVIDÉ MI CONTRASEÑA
+app.post('/auth/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
+        if (!doc.exists) return res.status(404).json({ error: "Email no encontrado" });
+
+        const resetLink = `https://${req.get('host')}/reset-password?email=${encodeURIComponent(email)}`; 
+        await sendResetEmail(email, resetLink);
+        res.json({ message: "Email enviado." });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 4. ESTABLECER NUEVA CONTRASEÑA
 app.post('/auth/set-password', async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await db.collection('users').doc(email).update({ password: hashedPassword });
-        res.json({ message: "Password updated!" });
-    } catch (err) { res.status(500).json({ error: "Update failed" }); }
+        res.json({ message: "¡Contraseña actualizada!" });
+    } catch (err) { res.status(500).json({ error: "Error al actualizar" }); }
 });
 
-// RUTAS PARA SERVIR HTML
+// SERVIR ARCHIVOS HTML
 app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-// LANZAMIENTO EN 8080
+// PUERTO 8080
 const PORT = 8080;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 CAPI Server LOCK-DOWN on port ${PORT}`);
-    db.listCollections()
-        .then(() => console.log('✅ FIRESTORE: Conectado con éxito'))
-        .catch(e => console.log('❌ FIRESTORE: Revisa tu gcloud login'));
-});
-// Para el Login Manual (Cambia /auth/login por /login si es necesario)
-app.post('/login', async (req, res) => { 
-    // ... tu lógica de login aquí ...
-});
-
-// Para el Botón de Google (Cambia /auth/google por /auth/google)
-app.post('/auth/google', async (req, res) => {
-    // ... tu lógica de Google login aquí ...
+    console.log(`🚀 Servidor CAPI listo en puerto ${PORT}`);
 });
