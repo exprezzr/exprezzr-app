@@ -59,7 +59,7 @@
 
             <div class="divider"><span>OR REGISTER MANUALLY</span></div>
 
-            <form id="signupForm" onsubmit="return false;">
+            <form id="signupForm">
                 <div class="form-row">
                     <input type="text" id="firstName" placeholder="First Name" required>
                     <input type="text" id="lastName" placeholder="Last Name" required>
@@ -102,7 +102,8 @@
         }
 
         // 1. EVENTO: Registro Manual
-        document.getElementById('signupForm').addEventListener('submit', async () => {
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const userData = {
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
@@ -112,7 +113,7 @@
             };
 
             try {
-                const res = await fetch('/register', {
+                const res = await fetch('/auth/register', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(userData)
@@ -121,7 +122,7 @@
 
                 if (res.ok) {
                     showCapiToast("Account created successfully!");
-                    setTimeout(() => window.location.href = '/?openLogin=true', 2500);
+                    setTimeout(() => window.location.href = '/index.html?openLogin=true', 2500);
                 } else {
                     showCapiToast(data.error || "Error", true);
                 }
@@ -136,7 +137,7 @@
             if (!phoneValue) return showCapiToast("Please enter your phone number", true);
 
             try {
-                const res = await fetch('/update-phone', {
+                const res = await fetch('/auth/update-phone', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ 
@@ -147,7 +148,8 @@
 
                 if (res.ok) {
                     showCapiToast("Profile complete! Welcome to Exprezzr.");
-                    setTimeout(() => window.location.href = '/', 2000);
+                    localStorage.setItem('capi_user', JSON.stringify(tempUser));
+                    setTimeout(() => window.location.href = '/index.html', 2000);
                 } else {
                     showCapiToast("Error updating profile", true);
                 }
@@ -165,27 +167,21 @@ function handleCredentialResponse(response) {
     })
     .then(r => r.json())
     .then(data => {
-        console.log("Respuesta del servidor:", data); // Mira esto en la consola de tu Mac
-
-        // CASO: EL USUARIO YA EXISTE
-        if (data.isNewUser === false) {
-            // Mostramos el Toast Rojo
-            showCapiToast("Email already registered. Redirecting to Login...", true);
-            
-            // Forzamos la redirección al Mapa con la orden de abrir el Login
-            setTimeout(() => {
-                window.location.href = "/?openLogin=true";
-            }, 2000);
-            return;
-        }
-
-        // CASO: USUARIO NUEVO
-        if (data.isNewUser === true) {
+        if (data.user) {
             tempUser = data.user;
-            // Abrir modal del teléfono
-            const phoneModal = document.getElementById('phoneModal');
-            phoneModal.style.display = 'flex';
-            phoneModal.classList.add('active');
+            if (data.isNewUser) {
+                // Abrir modal del teléfono para completar perfil
+                const phoneModal = document.getElementById('phoneModal');
+                phoneModal.style.display = 'flex';
+                phoneModal.classList.add('active');
+            } else {
+                // Usuario ya existe, loguear directamente
+                localStorage.setItem('capi_user', JSON.stringify(data.user));
+                showCapiToast("Welcome back!");
+                setTimeout(() => window.location.href = '/index.html', 1500);
+            }
+        } else {
+            showCapiToast(data.error || "Google auth failed", true);
         }
     })
     .catch(err => {

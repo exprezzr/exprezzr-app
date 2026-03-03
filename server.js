@@ -13,6 +13,15 @@ app.use(express.json());
 app.use(cors()); 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// REDIRECCIÓN A HTTPS (SEGURIDAD)
+app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
+        res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+        next();
+    }
+});
+
 // INITIALIZE FIREBASE
 if (!admin.apps.length) {
     admin.initializeApp({
@@ -95,8 +104,8 @@ app.post('/auth/set-password', async (req, res) => {
 app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-// PUERTO 8080
-const PORT = 8080;
+// PUERTO
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor CAPI listo en puerto ${PORT}`);
 });
