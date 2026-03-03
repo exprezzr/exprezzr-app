@@ -21,7 +21,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, .logo-text, .btn-get-fare { font-family: 'Orbitron', sans-serif; }
+h1, h2, h3, .logo-main, .logo-sub, .btn-get-fare { font-family: 'Orbitron', sans-serif; }
 
 /* 2. NAVBAR */
 header { 
@@ -31,8 +31,23 @@ header {
 }
 
 .logo-area { display: flex; align-items: center; }
-.logo-area img { height: 45px; margin-right: 12px; }
-.logo-text { font-weight: bold; font-size: 20px; color: var(--gold); letter-spacing: 2px; }
+.logo-area img { height: 55px; margin-right: 12px; }
+.logo-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--gold);
+    margin-left: 8px; /* space between image and text */
+}
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit; /* ensure link doesn't change color on hover */
+}
+.logo-main { font-weight: bold; font-size: 22px; letter-spacing: 1px; }
+.logo-sub { font-size: 8px; letter-spacing: 0.5px; color: #ccc; margin-left: 4px; }
+
 
 /* ======================================================
    REGISTRO & LOGIN - REFUERZO DE FORMATO
