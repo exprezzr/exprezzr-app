@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - CAPI by Exprezzr</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="images/logo-exprezzr.png" alt="Logo Exprezzr">
+            <span class="logo-text">TAXI APP</span>
+        </div>
+        <nav id="mainNav">
+            <a href="/signup" class="btn-sistema">Sign Up</a>
+            <a href="javascript:void(0)" onclick="openLoginModal()" class="nav-link">Login</a>
+            <a href="/services">Services</a>
+            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
+        </nav>
+    </header>
+
+    <section class="services-section">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <img src="https://via.placeholder.com/400x240?text=Taxi" alt="Taxi Service">
+                <h3>Taxi Rides</h3>
+                <p>Fast and comfortable trips anywhere in the city.</p>
+            </div>
+            <div class="service-card">
+                <img src="https://via.placeholder.com/400x240?text=Scheduled" alt="Scheduled Transport">
+                <h3>Scheduled Transport</h3>
+                <p>Book ahead for airport runs and daily commutes.</p>
+            </div>
+            <div class="service-card">
+                <img src="https://via.placeholder.com/400x240?text=Package" alt="Package Delivery">
+                <h3>Package Delivery</h3>
+                <p>Send small packages across town with ease.</p>
+            </div>
+            <div class="service-card">
+                <img src="https://via.placeholder.com/400x240?text=Documents" alt="Document Transfer">
+                <h3>Document Transfer</h3>
+                <p>Secure transport for legal documents and contracts.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 CAPI by Exprezzr LLC - Ryan Ruffen. All rights reserved.</p>
+    </footer>
+
+    <!-- include same modals and scripts as index.html -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <button type="button" class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+            <div class="logo-container" style="text-align: center; margin-bottom: 15px;">
+                <img src="images/logo-exprezzr.png" alt="Logo" style="height: 50px;">
+                <h2 style="font-family: 'Orbitron'; color: #f4d03f; font-size: 1.1rem; margin-top: 5px;">CAPI LOGIN</h2>
+            </div>
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <div id="g_id_onload" 
+                     data-client_id="139793933381-76aoe2ct7h3e317qj6dvoh9iotb8tb4t.apps.googleusercontent.com" 
+                     data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-width="100%"></div>
+            </div>
+            <div class="divider"><span>OR EMAIL</span></div>
+            <form id="modalLoginForm" onsubmit="handleManualLogin(event)">
+                <input type="email" id="modalEmail" placeholder="Email Address" required class="modal-input">
+                <input type="password" id="modalPassword" placeholder="Password" required class="modal-input">
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <a href="javascript:void(0)" onclick="forgotPassword()" style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.7rem; text-decoration: none;">FORGOT PASSWORD?</a>
+                </div>
+                <button type="submit" class="btn-primary-signup" style="width: 100%;">ENTER</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="supportModal" class="modal-overlay">
+        <div class="modal-card">
+            <button type="button" class="btn-close-modal" onclick="closeSupportModal()">&times;</button>
+            <h2 style="color: #f4d03f; text-align:center; font-family:'Orbitron';">Need Help?</h2>
+            <form id="supportForm">
+                <input type="text" id="supportFirstName" placeholder="First Name" required class="modal-input">
+                <input type="text" id="supportLastName" placeholder="Last Name" required class="modal-input">
+                <input type="tel" id="supportPhone" placeholder="Phone Number" required class="modal-input">
+                <input type="email" id="supportEmail" placeholder="Your Email (optional)" class="modal-input">
+                <textarea id="supportComment" placeholder="How can we help?" required class="modal-input" style="height:100px;"></textarea>
+                <button type="submit" class="btn-primary-signup" style="width:100%;">SEND</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAx-p4vgsvBvFmG9JCT5nVisr4xMF7jLz0&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>

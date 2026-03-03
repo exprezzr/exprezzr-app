@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const path = require('path');
 const bcrypt = require('bcryptjs'); // ✅ SOLO UNA VEZ AQUÍ
 const cors = require('cors');
-const { sendResetEmail } = require('./email/mailer');
+const { sendResetEmail, sendSupportEmail } = require('./email/mailer');
 
 const app = express();
 
@@ -166,17 +166,21 @@ app.post('/auth/set-password', async (req, res) => {
 app.post('/support', async (req, res) => {
     try {
         const { name, lastName, phone, comment, email } = req.body;
+
+        // just send the support email; no firestore storage needed
         await sendSupportEmail({ name, lastName, phone, comment, fromEmail: email });
+
         res.json({ message: 'Message sent' });
     } catch (err) {
         console.error('Support email error', err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'Could not send support message. ' + err.message });
     }
 });
 
 // SERVIR ARCHIVOS HTML
 app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/services', (req, res) => res.sendFile(path.join(__dirname, 'public', 'services.html')));
 
 // PUERTO
 const PORT = process.env.PORT || 8080;
