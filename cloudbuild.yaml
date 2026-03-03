@@ -22,3 +22,7 @@ steps:
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/exprezzr-repo/exprezzr-app'
+
+# Al final de tu archivo cloudbuild.yaml actual:
+options:
+  logging: CLOUD_LOGGING_ONLY 
