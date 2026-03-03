@@ -26,7 +26,7 @@
             <a href="/signup" class="btn-sistema">Sign Up</a>
             <a href="javascript:void(0)" onclick="openLoginModal()" class="nav-link">Login</a>
             <a href="/services">Services</a>
-            <a href="/support">Support</a>
+            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
         </nav>
     </header>
 
@@ -133,6 +133,22 @@
         </div>
     </div>
 
+    <!-- support modal -->
+    <div id="supportModal" class="modal-overlay">
+        <div class="modal-card">
+            <button type="button" class="btn-close-modal" onclick="closeSupportModal()">&times;</button>
+            <h2 style="color: #f4d03f; text-align:center; font-family:'Orbitron';">Need Help?</h2>
+            <form id="supportForm">
+                <input type="text" id="supportFirstName" placeholder="First Name" required class="modal-input">
+                <input type="text" id="supportLastName" placeholder="Last Name" required class="modal-input">
+                <input type="tel" id="supportPhone" placeholder="Phone Number" required class="modal-input">
+                <input type="email" id="supportEmail" placeholder="Your Email (optional)" class="modal-input">
+                <textarea id="supportComment" placeholder="How can we help?" required class="modal-input" style="height:100px;"></textarea>
+                <button type="submit" class="btn-primary-signup" style="width:100%;">SEND</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // --- VARIABLES GLOBALES ---
         let map, directionsService, directionsDisplay;
@@ -151,8 +167,10 @@
         }
 
         window.onclick = function(event) {
-            const modal = document.getElementById('loginModal');
-            if (event.target == modal) closeLoginModal();
+            const loginModal = document.getElementById('loginModal');
+            const supportModal = document.getElementById('supportModal');
+            if (event.target == loginModal) closeLoginModal();
+            if (event.target == supportModal) closeSupportModal();
         }
 
         // --- LÓGICA DE AUTENTICACIÓN ---
@@ -162,6 +180,43 @@
             closeLoginModal();
             updateUI(user);
         }
+
+        // support modal helpers
+        function openSupportModal() {
+            const modal = document.getElementById('supportModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+        function closeSupportModal() {
+            const modal = document.getElementById('supportModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        document.getElementById('supportForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('supportFirstName').value;
+            const lastName = document.getElementById('supportLastName').value;
+            const phone = document.getElementById('supportPhone').value;
+            const email = document.getElementById('supportEmail').value;
+            const comment = document.getElementById('supportComment').value;
+            try {
+                const res = await fetch('/support', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ name, lastName, phone, comment, email })
+                });
+                if (res.ok) {
+                    showCapiToast('Message sent, we will contact you soon');
+                    closeSupportModal();
+                } else {
+                    const data = await res.json();
+                    showCapiToast(data.error || 'Failed to send', true);
+                }
+            } catch (err) {
+                showCapiToast('Connection error', true);
+            }
+        });
 
         async function handleManualLogin(event) {
             event.preventDefault();
@@ -221,6 +276,7 @@
                 const data = await response.json();
                 if (response.ok) {
                     showCapiToast("Success! Check your email for the reset link.");
+                    closeLoginModal();
                 } else {
                     showCapiToast(data.error || "Something went wrong.", true);
                 }
@@ -254,7 +310,7 @@
                     <span style="color:#f4d03f; font-family:'Orbitron'; font-weight:bold; font-size:12px; margin-right:15px;">WELCOME, ${user.firstName.toUpperCase()}</span>
                     <a href="javascript:void(0)" onclick="logout()" class="btn-sistema" style="color:#888 !important; border-color:#444;">LOGOUT</a>
                     <a href="/services">Services</a>
-                    <a href="/support">Support</a>
+                    <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
                 `;
             }
         }
@@ -290,8 +346,18 @@
             if (savedUser) updateUI(JSON.parse(savedUser));
 
             document.getElementById('btnLocate')?.addEventListener('click', () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
+                if (!map) {
+                    showCapiToast('Map is still loading, please wait', true);
+                    return;
+                }
+
+                if (!navigator.geolocation) {
+                    showCapiToast('Geolocation not supported in this browser', true);
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
                         const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
                         map.setCenter(pos);
                         const geocoder = new google.maps.Geocoder();
@@ -300,8 +366,12 @@
                                 document.getElementById("pickupAddress").value = results[0].formatted_address;
                             }
                         });
-                    });
-                }
+                    },
+                    (err) => {
+                        console.error('Geolocation error', err);
+                        showCapiToast('Unable to retrieve your location', true);
+                    }
+                );
             });
 
             document.getElementById('calcFareBtn').addEventListener('click', () => {

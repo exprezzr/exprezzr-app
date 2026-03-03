@@ -135,6 +135,12 @@
         });
 
         // 2. EVENTO: Botón del Modal (Independiente)
+        function closePhoneModal() {
+            const modal = document.getElementById('phoneModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
         document.getElementById('savePhoneBtn').addEventListener('click', async () => {
             const phoneValue = document.getElementById('modalPhone').value;
             if (!phoneValue) return showCapiToast("Please enter your phone number", true);
@@ -152,6 +158,8 @@
                 if (res.ok) {
                     showCapiToast("Profile complete! Welcome to Exprezzr.");
                     localStorage.setItem('capi_user', JSON.stringify(tempUser));
+                    // close before redirect so modal isn't lingering
+                    closePhoneModal();
                     setTimeout(() => window.location.href = '/index.html', 2000);
                 } else {
                     showCapiToast("Error updating profile", true);

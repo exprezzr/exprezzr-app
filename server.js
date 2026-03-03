@@ -162,6 +162,18 @@ app.post('/auth/set-password', async (req, res) => {
     } catch (err) { res.status(500).json({ error: "Error al actualizar" }); }
 });
 
+// SUPPORT FORM HANDLER
+app.post('/support', async (req, res) => {
+    try {
+        const { name, lastName, phone, comment, email } = req.body;
+        await sendSupportEmail({ name, lastName, phone, comment, fromEmail: email });
+        res.json({ message: 'Message sent' });
+    } catch (err) {
+        console.error('Support email error', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // SERVIR ARCHIVOS HTML
 app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
