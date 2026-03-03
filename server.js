@@ -1,4 +1,5 @@
-require('dotenv').config(); 
+require('dotenv').config();
+const bcrypt = require('bcryptjs'); 
 const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
@@ -87,4 +88,13 @@ app.listen(PORT, '0.0.0.0', () => {
     db.listCollections()
         .then(() => console.log('✅ FIRESTORE: Conectado con éxito'))
         .catch(e => console.log('❌ FIRESTORE: Revisa tu gcloud login'));
+});
+// Para el Login Manual (Cambia /auth/login por /login si es necesario)
+app.post('/login', async (req, res) => { 
+    // ... tu lógica de login aquí ...
+});
+
+// Para el Botón de Google (Cambia /auth/google por /auth/google)
+app.post('/auth/google', async (req, res) => {
+    // ... tu lógica de Google login aquí ...
 });
