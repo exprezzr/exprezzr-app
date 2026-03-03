@@ -65,3 +65,5 @@ app.listen(PORT, '0.0.0.0', () => {
         .then(() => console.log('✅ FIRESTORE: Conectado con éxito'))
         .catch(e => console.log('❌ FIRESTORE: Revisa tu gcloud login'));
 });
+
+Cmd + S
