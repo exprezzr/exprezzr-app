@@ -44,8 +44,30 @@ app.post('/auth/forgot-password', async (req, res) => {
     }
 });
 
+// C. INICIO DE SESIÓN (LOGIN)
+app.post('/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const userRef = db.collection('users').doc(email);
+        const doc = await userRef.get();
+
+        if (!doc.exists) return res.status(404).json({ error: "Usuario no encontrado" });
+
+        const user = doc.data();
+        const match = await bcrypt.compare(password, user.password);
+
+        if (match) {
+            res.json({ success: true, message: "Bienvenido" });
+        } else {
+            res.status(401).send("Contraseña incorrecta");
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // B. ACTUALIZAR CONTRASEÑA (DESDE EL LINK)
-app.post('/auth/set-password', async (req, res) => {    
+app.post('/auth/set-password', async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         const hashedPassword = await bcrypt.hash(newPassword, 10);
