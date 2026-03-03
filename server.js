@@ -66,4 +66,4 @@ app.listen(PORT, '0.0.0.0', () => {
         .catch(e => console.log('❌ FIRESTORE: Revisa tu gcloud login'));
 });
 
-Cmd + S
+// Update for production v2
