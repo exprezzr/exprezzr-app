@@ -416,4 +416,36 @@ document.addEventListener('DOMContentLoaded', function() {
         disableMobile: true,
         closeOnSelect: true // Cierra automáticamente al seleccionar fecha
     });
+
+    // --- SOPORTE PARA ENTER EN FORMULARIOS Y MODALES ---
+    
+    // 1. Listener para el modal de Login (Email y Password)
+    const loginInputs = [document.getElementById('modalEmail'), document.getElementById('modalPassword')];
+    loginInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const loginBtn = document.querySelector('#loginModal .btn-primary-signup');
+                    if (loginBtn) loginBtn.click();
+                }
+            });
+        }
+    });
+
+    // 2. Listener para la página de Reset Password (si los IDs coinciden)
+    const resetInputs = [document.getElementById('newPassword'), document.getElementById('confirmPassword')];
+    resetInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    // Busca el botón de acción en la página de reset (por clase o por el atributo onclick)
+                    const actionBtn = document.querySelector('button[onclick*="setPassword"]') || 
+                                      document.querySelector('.btn-primary-signup');
+                    if (actionBtn) actionBtn.click();
+                }
+            });
+        }
+    });
 });
