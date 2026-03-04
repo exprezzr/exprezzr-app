@@ -255,6 +255,14 @@ function openLoginModal() {
 
 // --- FUNCIONES PARA EL MODAL DE RESERVA (SERVICES PAGE) ---
 window.openBookingModal = function() {
+    // VALIDACIÓN DE SESIÓN: Obligatorio estar logueado
+    const userStr = localStorage.getItem('capi_user');
+    if (!userStr) {
+        showCapiToast("Please Log In or Sign Up to book a service.", true);
+        setTimeout(() => openLoginModal(), 1000); // Abre el modal tras 1 seg
+        return;
+    }
+
     const modal = document.getElementById('bookingModal');
     if (modal) {
         modal.style.display = 'flex';
