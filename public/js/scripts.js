@@ -195,7 +195,15 @@ document.getElementById('confirmBookingBtn')?.addEventListener('click', async ()
     const destination = document.getElementById('destination').value;
     const priceText = document.getElementById('priceResult').innerText;
     const dateTime = document.getElementById('rideDateTime').value;
-    const user = JSON.parse(localStorage.getItem('capi_user') || '{}');
+    
+    // VALIDACIÓN DE SESIÓN: Obligatorio estar logueado
+    const userStr = localStorage.getItem('capi_user');
+    if (!userStr) {
+        showCapiToast("Please Log In or Sign Up to book a ride.", true);
+        setTimeout(() => openLoginModal(), 1000); // Abre el modal tras 1 seg
+        return;
+    }
+    const user = JSON.parse(userStr);
 
     if (selectedRideType === 'SCHEDULED' && !dateTime) {
         return showCapiToast("Please select a date and time.", true);
