@@ -696,3 +696,13 @@ nav span {
     color: #000 !important;
     border-color: var(--gold) !important;
 }
+
+/* --- ANIMACIÓN DE CARRO/LOGO EN CAMINO --- */
+@keyframes drive {
+    0% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    100% { transform: translateX(-5px); }
+}
+.driving-anim {
+    animation: drive 2s infinite ease-in-out;
+}

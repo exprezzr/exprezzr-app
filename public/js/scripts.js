@@ -216,13 +216,30 @@ document.getElementById('confirmBookingBtn')?.addEventListener('click', async ()
             body: JSON.stringify({ origin, destination, price: priceText, type: selectedRideType, time: dateTime, user })
         });
         const data = await res.json();
-        if (res.ok) showCapiToast("Booking Request Sent! We will email you shortly.", false, 'success');
+        if (res.ok) {
+            // Ocultar formulario y mostrar éxito
+            document.getElementById('bookingInputs').style.display = 'none';
+            document.getElementById('bookingSuccess').style.display = 'flex';
+        }
         else showCapiToast("Error booking ride.", true);
     } catch (err) {
         console.error(err);
         showCapiToast("Connection error.", true);
     }
 });
+
+// Función para reiniciar el formulario y reservar otro viaje
+window.resetBookingForm = function() {
+    document.getElementById('bookingInputs').style.display = 'block';
+    document.getElementById('bookingSuccess').style.display = 'none';
+    
+    // Limpiar campos
+    document.getElementById('origin').value = '';
+    document.getElementById('destination').value = '';
+    document.getElementById('priceDisplayArea').style.display = 'none';
+    document.getElementById('rideSchedulingArea').style.display = 'none';
+    document.getElementById('acceptRideBtn').style.display = 'block';
+};
 
 // Función para ABRIR el modal desde el menú
 function openLoginModal() {
