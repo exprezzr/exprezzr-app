@@ -249,7 +249,10 @@ app.get('/card', (req, res) => res.sendFile(path.join(__dirname, 'public', 'card
 
 app.get('/qr-contact', async (req, res) => {
     try {
-        const url = 'https://exprezzr.com/card'; // URL de tu tarjeta digital
+        // Genera la URL dinámicamente basada en el host actual (localhost o dominio)
+        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+        const url = `${protocol}://${req.get('host')}/card`;
+
         // Genera el QR con los colores de tu marca
         const qrImage = await QRCode.toDataURL(url, {
             color: {
