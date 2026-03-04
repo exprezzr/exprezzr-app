@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capi Taxi - About Us</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="capiToast" class="capi-toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <header>
+        <div class="logo-area">
+            <a href="/index.html" class="logo-link">
+                <img src="images/logo-exprezzr.webp" alt="Logo Exprezzr">
+                <div class="logo-text">
+                    <span class="logo-main">Capi Taxi</span>
+                    <span class="logo-sub">by Exprezzr LLC</span>
+                </div>
+            </a>
+        </div>
+        <nav id="mainNav">
+            <a href="/signup" class="btn-sistema">Sign Up</a>
+            <a href="javascript:void(0)" onclick="openLoginModal()" class="nav-link">Login</a>
+            <a href="/services">Services</a>
+            <a href="/about" style="color: var(--gold);">About</a>
+            <a href="javascript:void(0)" onclick="openSupportModal()">Support</a>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 50vh;">
+        <div class="hero-info">
+            <h1>ABOUT <span>CAPI</span></h1>
+            <p>Redefining Professional Transportation in Massachusetts.</p>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="about-container">
+            <h2 style="color: #f4d03f; font-family: 'Orbitron'; margin-bottom: 20px;">WHO WE ARE</h2>
+            <p class="about-intro">
+                <strong>CAPI by Exprezzr LLC</strong> is a premier transportation provider officially registered and operating in the Commonwealth of Massachusetts. 
+                We are dedicated to redefining the standards of urban mobility through an unwavering commitment to safety, punctuality, and exceptional customer service.
+                More than just a ride, we offer a professional experience tailored to your needs.
+            </p>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Safety First</h3>
+                    <p>Your well-being is our absolute priority. Our fleet undergoes rigorous daily inspections, and our drivers are professionally vetted and trained to ensure a secure journey every time.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Unmatched Punctuality</h3>
+                    <p>We respect your time. Whether it's an airport transfer or a critical business meeting, our advanced scheduling system guarantees that we are there exactly when you need us.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Officially Registered</h3>
+                    <p>We operate with full transparency and compliance under Massachusetts state laws. You can trust CAPI for a legitimate, insured, and fully professional service.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Luxury Standard</h3>
+                    <p>Experience the comfort of our premium fleet. From clean interiors to professional chauffeurs, we ensure that every mile you travel with us is done in style and comfort.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 CAPI by Exprezzr LLC - Ryan Ruffen. All rights reserved.</p>
+    </footer>
+
+    <!-- Login Modal (Reused) -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <button type="button" class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+            <div class="logo-container" style="text-align: center; margin-bottom: 15px;">
+                <img src="images/logo-exprezzr.webp" alt="Logo" style="height: 50px;">
+                <h2 style="font-family: 'Orbitron'; color: #f4d03f; font-size: 1.1rem; margin-top: 5px;">CAPI LOGIN</h2>
+            </div>
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <div id="g_id_onload" data-client_id="139793933381-76aoe2ct7h3e317qj6dvoh9iotb8tb4t.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+                <div class="g_id_signin" data-type="standard" data-width="100%"></div>
+            </div>
+            <div class="divider"><span>OR EMAIL</span></div>
+            <form id="modalLoginForm" onsubmit="handleManualLogin(event)">
+                <input type="email" id="modalEmail" placeholder="Email Address" required class="modal-input">
+                <input type="password" id="modalPassword" placeholder="Password" required class="modal-input">
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <a href="javascript:void(0)" onclick="forgotPassword()" style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.7rem; text-decoration: none;">FORGOT PASSWORD?</a>
+                </div>
+                <button type="submit" class="btn-primary-signup" style="width: 100%;">ENTER</button>
+            </form>
+            <div style="margin-top: 15px; font-size: 0.8rem; color: #ccc;">
+                Don't have an account? <a href="/signup" style="color: #f4d03f; text-decoration: none; font-weight: bold;">SIGN UP</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>
