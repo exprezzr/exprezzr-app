@@ -220,7 +220,9 @@ app.post('/api/book-ride', async (req, res) => {
             html: `
                 <h2>New Ride Request</h2>
                 <p><strong>Type:</strong> ${type}</p>
-                <p><strong>Customer:</strong> ${user.firstName || 'Guest'} ${user.lastName || ''} (${user.email || 'No email'})</p>
+                <p><strong>Customer:</strong> ${user.firstName || 'Guest'} ${user.lastName || ''}</p>
+                <p><strong>Email:</strong> ${user.email || 'No email'}</p>
+                <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
                 <p><strong>Pickup:</strong> ${origin}</p>
                 <p><strong>Dropoff:</strong> ${destination}</p>
                 <p><strong>Estimated Price:</strong> ${price}</p>

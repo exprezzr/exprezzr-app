@@ -145,8 +145,16 @@
         }
 
         document.getElementById('savePhoneBtn').addEventListener('click', async () => {
-            const phoneValue = document.getElementById('modalPhone').value;
-            if (!phoneValue) return showCapiToast("Please enter your phone number", true);
+            let phoneValue = document.getElementById('modalPhone').value;
+            
+            // Verificar dígitos para validación, pero mantener formato original
+            const digits = phoneValue.replace(/\D/g, '');
+            if (!digits) return showCapiToast("Please enter your phone number", true);
+
+            // Autogenerar el '1' si es un número de 10 dígitos (US standard)
+            if (digits.length === 10) {
+                phoneValue = '1' + phoneValue;
+            }
 
             try {
                 const res = await fetch('/auth/update-phone', {
@@ -160,7 +168,11 @@
 
                 if (res.ok) {
                     showCapiToast("Profile complete! Welcome to Exprezzr.", false, 'success');
+                    
+                    // Actualizar el usuario local con el teléfono formateado
+                    tempUser.phone = phoneValue;
                     localStorage.setItem('capi_user', JSON.stringify(tempUser));
+                    
                     // close before redirect so modal isn't lingering
                     closePhoneModal();
                     setTimeout(() => window.location.href = '/index.html', 2000);
