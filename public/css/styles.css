@@ -706,3 +706,40 @@ nav span {
 .driving-anim {
     animation: drive 2s infinite ease-in-out;
 }
+
+/* --- MODAL DE RESERVA COMPLETO (SERVICES) --- */
+.booking-modal-card {
+    max-width: 1000px;
+    width: 95%;
+    padding: 0;
+    background: #000;
+    border: 2px solid var(--gold);
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(244, 208, 63, 0.15);
+}
+.booking-modal-body {
+    display: flex;
+    flex-direction: row;
+    height: 550px; /* Altura fija para mapa y form */
+}
+.booking-modal-form-container {
+    width: 360px;
+    padding: 25px;
+    overflow-y: auto;
+    border-right: 1px solid #333;
+    background: #000;
+    text-align: left;
+}
+.booking-modal-map-container {
+    flex: 1;
+    background: #1a1a1a;
+    position: relative;
+}
+@media (max-width: 850px) {
+    .booking-modal-body { flex-direction: column; height: auto; }
+    .booking-modal-form-container { width: 100%; border-right: none; border-bottom: 1px solid #333; max-height: 400px; }
+    .booking-modal-map-container { height: 300px; }
+}

@@ -253,6 +253,27 @@ function openLoginModal() {
     }
 }
 
+// --- FUNCIONES PARA EL MODAL DE RESERVA (SERVICES PAGE) ---
+window.openBookingModal = function() {
+    const modal = document.getElementById('bookingModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        
+        // Truco importante: Forzar al mapa a redibujarse porque estaba oculto
+        if (map) {
+            setTimeout(() => {
+                google.maps.event.trigger(map, "resize");
+                map.setCenter(map.getCenter());
+            }, 300);
+        }
+    }
+};
+
+window.closeBookingModal = function() {
+    closeModalById('bookingModal');
+};
+
 // Función para CERRAR el modal (la X y fuera del cuadro)
 function closeLoginModal() {
     const modal = document.getElementById('loginModal');
@@ -264,11 +285,36 @@ function closeLoginModal() {
     }
 }
 
+// Helper genérico para cerrar modales
+function closeModalById(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300);
+    }
+}
+
 // Cerrar si hacen clic en el fondo negro (fuera de la tarjeta)
 window.onclick = function(event) {
     const modal = document.getElementById('loginModal');
-    if (event.target == modal) {
-        closeLoginModal();
+    const bookingModal = document.getElementById('bookingModal');
+    
+    if (event.target == modal) closeLoginModal();
+    if (event.target == bookingModal) window.closeBookingModal();
+    
+    const supportModal = document.getElementById('supportModal');
+    if (event.target == supportModal && window.closeSupportModal) window.closeSupportModal();
+}
+
+window.closeSupportModal = function() {
+    closeModalById('supportModal');
+};
+
+function openSupportModal() {
+    const modal = document.getElementById('supportModal');
+    if(modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
     }
 }
 function forgotPassword() {
