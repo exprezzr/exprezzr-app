@@ -55,6 +55,21 @@ app.get('/card', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'card.html'));
 });
 
+app.get('/download-vcard', (req, res) => {
+    const vcard = "BEGIN:VCARD\n" +
+                  "VERSION:3.0\n" +
+                  "FN:Capi Taxi\n" +
+                  "ORG:Exprezzr LLC\n" +
+                  "TEL;TYPE=WORK,VOICE:12015512020\n" +
+                  "EMAIL:support@exprezzr.com\n" +
+                  "URL:https://exprezzr.com\n" +
+                  "END:VCARD";
+
+    res.set('Content-Type', 'text/vcard');
+    res.set('Content-Disposition', 'attachment; filename="Capi_Taxi.vcf"');
+    res.send(vcard);
+});
+
 // RUTA DE ESTATUS: Para monitorear la salud del servidor
 app.get('/status', (req, res) => {
     res.json({

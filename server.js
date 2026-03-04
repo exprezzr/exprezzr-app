@@ -5,6 +5,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs'); // ✅ SOLO UNA VEZ AQUÍ
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const QRCode = require('qrcode');
 const { sendResetEmail } = require('./email/mailer'); // sendSupportEmail se manejará aquí directamente
 
 const app = express();
@@ -245,6 +246,39 @@ app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'si
 app.get('/services', (req, res) => res.sendFile(path.join(__dirname, 'public', 'services.html')));
 app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
 app.get('/card', (req, res) => res.sendFile(path.join(__dirname, 'public', 'card.html')));
+
+app.get('/qr-contact', async (req, res) => {
+    try {
+        const url = 'https://exprezzr.com/card'; // URL de tu tarjeta digital
+        // Genera el QR con los colores de tu marca
+        const qrImage = await QRCode.toDataURL(url, {
+            color: {
+                dark: '#f4d03f',  // Dorado
+                light: '#000000'  // Negro
+            }
+        });
+        res.send(`<body style="background:#000; display:flex; justify-content:center; align-items:center; height:100vh;">
+                    <img src="${qrImage}" style="border:2px solid #f4d03f; width:300px;">
+                  </body>`);
+    } catch (err) {
+        res.status(500).send("Error al generar el QR");
+    }
+});
+
+app.get('/download-vcard', (req, res) => {
+    const vcard = "BEGIN:VCARD\n" +
+                  "VERSION:3.0\n" +
+                  "FN:Capi Taxi\n" +
+                  "ORG:Exprezzr LLC\n" +
+                  "TEL;TYPE=WORK,VOICE:12015512020\n" +
+                  "EMAIL:support@exprezzr.com\n" +
+                  "URL:https://exprezzr.com\n" +
+                  "END:VCARD";
+
+    res.set('Content-Type', 'text/vcard');
+    res.set('Content-Disposition', 'attachment; filename="Capi_Taxi.vcf"');
+    res.send(vcard);
+});
 
 // PUERTO
 const PORT = process.env.PORT || 8080;
