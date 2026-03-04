@@ -18,6 +18,7 @@ function checkUserSession() {
     const nameDisplay = document.getElementById('userNameDisplay');
     const formTitle = document.getElementById('formMainTitle');
     const navButtons = document.querySelector('.btn-sistema'); // Botón de Sign Up
+    const loginLink = document.querySelector('a[onclick="openLoginModal()"]'); // Botón de Login
 
     if (savedUser) {
         const user = JSON.parse(savedUser);
@@ -31,10 +32,23 @@ function checkUserSession() {
         
         // 3. Ocultar el botón de Sign Up del Navbar (ya es usuario)
         if (navButtons) navButtons.style.display = 'none';
+
+        // 4. Cambiar Login por Logout
+        if (loginLink) {
+            loginLink.innerText = "LOGOUT";
+            loginLink.onclick = logout;
+        }
+
         console.log("CAPI: Sesión activa de " + user.email);
     }
 }
 window.addEventListener('load', checkUserSession);
+
+// Función para cerrar sesión
+window.logout = function() {
+    localStorage.removeItem('capi_user');
+    window.location.reload();
+};
 
 // --- GOOGLE MAPS ---
 let map, directionsService, directionsRenderer;
