@@ -50,6 +50,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// RUTA DE TARJETA DIGITAL
+app.get('/card', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'card.html'));
+});
+
 // RUTA DE ESTATUS: Para monitorear la salud del servidor
 app.get('/status', (req, res) => {
     res.json({
