@@ -40,8 +40,11 @@ window.addEventListener('load', checkUserSession);
 let map, directionsService, directionsRenderer;
 
 window.initMap = function() {
+    const mapElement = document.getElementById("map");
+    if (!mapElement) return; // Evita errores si no hay contenedor de mapa
+
     const startLocation = { lat: 42.28, lng: -71.71 };
-    map = new google.maps.Map(document.getElementById("map"), {
+    map = new google.maps.Map(mapElement, {
         zoom: 13, center: startLocation, disableDefaultUI: false,
         styles: [
             { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
