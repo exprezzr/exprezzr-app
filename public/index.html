@@ -8,6 +8,7 @@
     <title>CAPI by Exprezzr - Luxury Ride</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -70,6 +71,19 @@
                         <span id="priceResult" class="fare-amount-mini">$0.00</span>
                     </div>
                     <button id="acceptRideBtn" class="btn-capi-compact" style="background: #f4d03f; color: #000;">Accept Ride</button>
+                    
+                    <!-- Área de Programación (Oculta inicialmente) -->
+                    <div id="rideSchedulingArea" style="display: none; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                        <p style="color: #f4d03f; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; text-align: center;">WHEN DO YOU NEED IT?</p>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button type="button" id="btnUrgent" class="btn-capi-compact" style="flex: 1;">URGENT</button>
+                            <button type="button" id="btnSchedule" class="btn-capi-compact" style="flex: 1;">SCHEDULE</button>
+                        </div>
+                        <div id="dateTimeContainer" style="display: none; margin-bottom: 15px;">
+                            <input type="text" id="rideDateTime" class="modal-input" placeholder="Select Date & Time">
+                        </div>
+                        <button id="confirmBookingBtn" class="btn-primary-signup" style="width: 100%; font-size: 0.9rem;">CONFIRM BOOKING</button>
+                    </div>
                 </div>
             </div>
 
@@ -154,6 +168,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="js/scripts.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAx-p4vgsvBvFmG9JCT5nVisr4xMF7jLz0&libraries=places&callback=initMap" async defer></script>
 </body>

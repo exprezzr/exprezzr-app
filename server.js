@@ -3,8 +3,9 @@ const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
 const bcrypt = require('bcryptjs'); // ✅ SOLO UNA VEZ AQUÍ
+const nodemailer = require('nodemailer');
 const cors = require('cors');
-const { sendResetEmail, sendSupportEmail } = require('./email/mailer');
+const { sendResetEmail } = require('./email/mailer'); // sendSupportEmail se manejará aquí directamente
 
 const app = express();
 
@@ -71,7 +72,7 @@ app.post('/auth/google', async (req, res) => {
         const { token } = req.body; // JWT credential from GSI
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: GOOGLE_CLIENT_ID
         });
         const payload = ticket.getPayload();
         const { email, name, picture } = payload;
@@ -162,18 +163,76 @@ app.post('/auth/set-password', async (req, res) => {
     } catch (err) { res.status(500).json({ error: "Error al actualizar" }); }
 });
 
+// --- CONFIGURACIÓN DE CORREOS (TRANSPORTERS) ---
+
+// 1. SOPORTE (usa las credenciales de support@exprezzr.com)
+const supportTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.SUPPORT_EMAIL_USER,
+        pass: process.env.SUPPORT_EMAIL_PASS
+    }
+});
+
+// 2. RESERVAS (usa las credenciales de job@exprezzr.com)
+const jobTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.JOB_EMAIL_USER,
+        pass: process.env.JOB_EMAIL_PASS
+    }
+});
+
+if (!process.env.SUPPORT_EMAIL_PASS || !process.env.JOB_EMAIL_PASS) {
+    console.warn("⚠️  ADVERTENCIA: Faltan contraseñas de correo en .env (SUPPORT_EMAIL_PASS o JOB_EMAIL_PASS).");
+}
+
 // SUPPORT FORM HANDLER
 app.post('/support', async (req, res) => {
     try {
         const { name, lastName, phone, comment, email } = req.body;
 
-        // just send the support email; no firestore storage needed
-        await sendSupportEmail({ name, lastName, phone, comment, fromEmail: email });
+        const mailOptions = {
+            from: `"CAPI Support" <${process.env.SUPPORT_EMAIL_USER}>`,
+            to: process.env.SUPPORT_EMAIL_USER, // Se envía a la bandeja de soporte
+            replyTo: email, // Permite responder directamente al cliente
+            subject: `New Support Message: ${name} ${lastName}`,
+            html: `<p><strong>Name:</strong> ${name} ${lastName}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong><br>${comment}</p>`
+        };
 
+        await supportTransporter.sendMail(mailOptions);
         res.json({ message: 'Message sent' });
     } catch (err) {
         console.error('Support email error', err);
         res.status(500).json({ error: 'Could not send support message. ' + err.message });
+    }
+});
+
+// --- RUTA PARA RESERVAR VIAJE (ENVÍA EMAIL A JOB@EXPREZZR.COM) ---
+app.post('/api/book-ride', async (req, res) => {
+    try {
+        const { origin, destination, price, type, time, user } = req.body;
+        
+        const mailOptions = {
+            from: `"CAPI Booking System" <${process.env.JOB_EMAIL_USER}>`,
+            to: process.env.JOB_EMAIL_DESTINATION || 'job@exprezzr.com', 
+            subject: `NEW RIDE REQUEST: ${type} - ${user.email || 'Guest'}`,
+            html: `
+                <h2>New Ride Request</h2>
+                <p><strong>Type:</strong> ${type}</p>
+                <p><strong>Customer:</strong> ${user.firstName || 'Guest'} ${user.lastName || ''} (${user.email || 'No email'})</p>
+                <p><strong>Pickup:</strong> ${origin}</p>
+                <p><strong>Dropoff:</strong> ${destination}</p>
+                <p><strong>Estimated Price:</strong> ${price}</p>
+                <p><strong>Scheduled Time:</strong> ${time || 'ASAP'}</p>
+            `
+        };
+
+        await jobTransporter.sendMail(mailOptions);
+        res.json({ success: true, message: "Booking email sent" });
+    } catch (error) {
+        console.error("Error sending booking email:", error);
+        res.status(500).json({ error: "Could not send booking email" });
     }
 });
 

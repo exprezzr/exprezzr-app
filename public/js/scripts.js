@@ -51,7 +51,7 @@ window.logout = function() {
 };
 
 // --- GOOGLE MAPS ---
-let map, directionsService, directionsRenderer;
+let map, directionsService, directionsRenderer, userMarker;
 
 window.initMap = function() {
     const mapElement = document.getElementById("map");
@@ -103,6 +103,22 @@ document.getElementById('locateBtn')?.addEventListener('click', () => {
                     originInput.value = results[0].formatted_address;
                     map.setCenter(pos);
                     map.setZoom(16);
+
+                    if (userMarker) userMarker.setMap(null);
+                    userMarker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        icon: {
+                            path: "M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z",
+                            fillColor: "#000000",
+                            fillOpacity: 1,
+                            strokeWeight: 1,
+                            strokeColor: "#ffffff",
+                            scale: 1,
+                            anchor: new google.maps.Point(12, 12)
+                        },
+                        title: "My Location"
+                    });
                 }
             });
         });
@@ -114,8 +130,10 @@ document.getElementById('calcFareBtn')?.addEventListener('click', () => {
     const origin = document.getElementById('origin').value;
     const destination = document.getElementById('destination').value;
     const priceResult = document.getElementById('priceResult');
+    const priceDisplayArea = document.getElementById('priceDisplayArea');
 
-    if (!origin || !destination) return alert("Ingresa origen y destino.");
+    if (!origin || !destination) return showCapiToast("Please enter pickup and destination.", true);
+    if (!directionsService) return showCapiToast("Map service not ready.", true);
 
     directionsService.route({
         origin: origin, destination: destination, travelMode: google.maps.TravelMode.DRIVING,
@@ -124,10 +142,78 @@ document.getElementById('calcFareBtn')?.addEventListener('click', () => {
             directionsRenderer.setDirections(response);
             const miles = response.routes[0].legs[0].distance.value * 0.000621371;
             const finalPrice = 10.00 + (miles * 1.30);
-            priceResult.style.display = 'block';
-            priceResult.innerHTML = `Viaje estimado: <span>$${finalPrice.toFixed(2)}</span>`;
+            
+            if (priceDisplayArea) priceDisplayArea.style.display = 'block';
+            if (priceResult) priceResult.innerText = `$${finalPrice.toFixed(2)}`;
+        } else {
+            showCapiToast("Could not calculate route. Check addresses.", true);
         }
     });
+});
+
+// --- LÓGICA DE ACEPTAR Y PROGRAMAR VIAJE ---
+let selectedRideType = 'URGENT'; // Valor por defecto
+
+// 1. Al hacer clic en "Accept Ride"
+document.getElementById('acceptRideBtn')?.addEventListener('click', () => {
+    const scheduleArea = document.getElementById('rideSchedulingArea');
+    const acceptBtn = document.getElementById('acceptRideBtn');
+    
+    if (scheduleArea) scheduleArea.style.display = 'block';
+    if (acceptBtn) acceptBtn.style.display = 'none'; // Ocultamos el botón de aceptar para no duplicar
+    
+    // Simular clic en Urgente por defecto para estilo visual
+    document.getElementById('btnUrgent')?.click();
+});
+
+// 2. Botones de Urgente vs Schedule
+document.getElementById('btnUrgent')?.addEventListener('click', () => {
+    selectedRideType = 'URGENT';
+    document.getElementById('dateTimeContainer').style.display = 'none';
+    
+    // Estilos visuales (Activo/Inactivo)
+    document.getElementById('btnUrgent').style.background = '#f4d03f';
+    document.getElementById('btnUrgent').style.color = '#000';
+    document.getElementById('btnSchedule').style.background = '#000';
+    document.getElementById('btnSchedule').style.color = '#f4d03f';
+});
+
+document.getElementById('btnSchedule')?.addEventListener('click', () => {
+    selectedRideType = 'SCHEDULED';
+    document.getElementById('dateTimeContainer').style.display = 'block';
+    
+    // Estilos visuales
+    document.getElementById('btnSchedule').style.background = '#f4d03f';
+    document.getElementById('btnSchedule').style.color = '#000';
+    document.getElementById('btnUrgent').style.background = '#000';
+    document.getElementById('btnUrgent').style.color = '#f4d03f';
+});
+
+// 3. Confirmar Reserva y Enviar Email
+document.getElementById('confirmBookingBtn')?.addEventListener('click', async () => {
+    const origin = document.getElementById('origin').value;
+    const destination = document.getElementById('destination').value;
+    const priceText = document.getElementById('priceResult').innerText;
+    const dateTime = document.getElementById('rideDateTime').value;
+    const user = JSON.parse(localStorage.getItem('capi_user') || '{}');
+
+    if (selectedRideType === 'SCHEDULED' && !dateTime) {
+        return showCapiToast("Please select a date and time.", true);
+    }
+
+    try {
+        const res = await fetch('/api/book-ride', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ origin, destination, price: priceText, type: selectedRideType, time: dateTime, user })
+        });
+        const data = await res.json();
+        if (res.ok) showCapiToast("Booking Request Sent! We will email you shortly.", false, 'success');
+        else showCapiToast("Error booking ride.", true);
+    } catch (err) {
+        console.error(err);
+        showCapiToast("Connection error.", true);
+    }
 });
 
 // Función para ABRIR el modal desde el menú
@@ -162,15 +248,15 @@ window.onclick = function(event) {
 }
 function forgotPassword() {
     const email = document.getElementById('modalEmail').value;
-    if (!email) return alert("Please enter your email first.");
+    if (!email) return showCapiToast("Please enter your email first.", true);
     
-    fetch('/forgot-password', {
+    fetch('/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
     })
     .then(r => r.json())
-    .then(data => alert(data.message || data.error));
+    .then(data => showCapiToast(data.message || data.error, !!data.error, data.error ? 'error' : 'success'));
 }
 
 // --- TOAST NOTIFICATION (Para Index y Services) ---
@@ -241,3 +327,14 @@ window.handleCredentialResponse = function(response) {
         showCapiToast("Connection error", true);
     });
 };
+
+// --- FLATPICKR (CALENDARIO PREMIUM) ---
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("#rideDateTime", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i", // Formato limpio
+        minDate: "today",
+        disableMobile: true,
+        closeOnSelect: true // Cierra automáticamente al seleccionar fecha
+    });
+});

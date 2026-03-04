@@ -177,12 +177,12 @@ nav a:hover { color: var(--gold); }
 .booking-container {
     display: flex;
     flex-direction: row;
-    height: 480px !important; /* Altura fija para estabilidad */
+    min-height: 450px; /* Altura mínima flexible */
     max-width: 1200px;
     margin: 20px auto;
     background: #000;
     border-radius: 15px;
-    overflow: hidden;
+    overflow: visible; /* Permite que el contenido crezca y el calendario flote */
     border: 1px solid #333;
 }
 
@@ -195,6 +195,7 @@ nav a:hover { color: var(--gold); }
     flex-direction: column;
     justify-content: flex-start; /* Todo hacia el tope superior */
     background: #000;
+    border-radius: 15px 0 0 15px; /* Bordes redondeados izquierda */
 }
 
 #userNameDisplay {
@@ -350,7 +351,7 @@ nav a:hover { color: var(--gold); }
 /* Input con borde blanco y espacio a la derecha para el botón */
 .input-wrapper input {
     width: 100%;
-    padding: 10px 45px 10px 12px;
+    padding: 8px 40px 8px 10px; /* Más compacto */
     background: #111;
     border: 1px solid #ffffff; /* Borde blanco resaltado */
     border-radius: 8px;
@@ -447,10 +448,11 @@ nav a:hover { color: var(--gold); }
 /* Mapa: Ocupa el resto de la derecha */
 .map-container {
     flex: 1;
-    height: 100% !important;
+    min-height: 450px;
     border-left: 1px solid #333;
     background: #1a1a1a;
     position: relative;
+    border-radius: 0 15px 15px 0; /* Bordes redondeados derecha */
 }
 
 /* 6. TOAST & MODAL */
@@ -681,4 +683,16 @@ nav span {
     font-size: 0.7rem;
     color: #888;
     font-family: 'Orbitron', sans-serif;
+}
+
+/* --- FLATPICKR COMPACTO (CALENDARIO) --- */
+.flatpickr-calendar {
+    font-size: 0.8rem !important; /* Reducir tamaño general */
+    border: 1px solid var(--gold) !important;
+    box-shadow: 0 0 15px rgba(244, 208, 63, 0.2) !important;
+}
+.flatpickr-day.selected {
+    background: var(--gold) !important;
+    color: #000 !important;
+    border-color: var(--gold) !important;
 }
