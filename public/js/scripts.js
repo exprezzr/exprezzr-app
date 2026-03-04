@@ -172,3 +172,72 @@ function forgotPassword() {
     .then(r => r.json())
     .then(data => alert(data.message || data.error));
 }
+
+// --- TOAST NOTIFICATION (Para Index y Services) ---
+window.showCapiToast = function(msg, isError = false, type = 'info') {
+    const toast = document.getElementById('capiToast');
+    const message = document.getElementById('toastMessage');
+    
+    // Si no existe el contenedor de toast (ej. en services.html), usamos alert
+    if (!toast || !message) return alert(msg); 
+
+    message.innerText = msg;
+    toast.className = 'capi-toast show';
+    if (type === 'error' || isError) toast.classList.add('error');
+    else if (type === 'success') toast.classList.add('success');
+    
+    setTimeout(() => toast.classList.remove('show'), 4000);
+};
+
+// --- MANUAL LOGIN ---
+window.handleManualLogin = async function(event) {
+    event.preventDefault();
+    const email = document.getElementById('modalEmail').value;
+    const password = document.getElementById('modalPassword').value;
+
+    try {
+        const res = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('capi_user', JSON.stringify(data.user));
+            showCapiToast("Welcome back!", false, 'success');
+            closeLoginModal();
+            // Recargar para actualizar la UI (mostrar nombre en vez de botones)
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showCapiToast(data.error || "Login failed", true);
+        }
+    } catch (err) {
+        console.error(err);
+        showCapiToast("Connection error", true);
+    }
+};
+
+// --- GOOGLE LOGIN RESPONSE (Para Index y Services) ---
+window.handleCredentialResponse = function(response) {
+    fetch('/auth/google', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token: response.credential })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.user) {
+            localStorage.setItem('capi_user', JSON.stringify(data.user));
+            showCapiToast("Welcome back!", false, 'success');
+            closeLoginModal();
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showCapiToast(data.error || "Google login failed", true);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showCapiToast("Connection error", true);
+    });
+};
