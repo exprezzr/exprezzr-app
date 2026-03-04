@@ -284,13 +284,7 @@ window.closeBookingModal = function() {
 
 // Función para CERRAR el modal (la X y fuera del cuadro)
 function closeLoginModal() {
-    const modal = document.getElementById('loginModal');
-    if (modal) {
-        modal.classList.remove('active'); // Quitamos animación
-        setTimeout(() => {
-            modal.style.display = 'none'; // Al final ocultamos
-        }, 300);
-    }
+    closeModalById('loginModal');
 }
 
 // Helper genérico para cerrar modales
@@ -335,11 +329,17 @@ function forgotPassword() {
         body: JSON.stringify({ email })
     })
     .then(r => r.json())
-    .then(data => showCapiToast(data.message || data.error, !!data.error, data.error ? 'error' : 'success'));
+    .then(data => {
+        if (!data.error) {
+            closeLoginModal(); // Cerramos el modal si fue exitoso
+        }
+        // Mostramos el mensaje por 7 segundos (4000 + 3000 extra)
+        showCapiToast(data.message || data.error, !!data.error, data.error ? 'error' : 'success', 7000);
+    });
 }
 
 // --- TOAST NOTIFICATION (Para Index y Services) ---
-window.showCapiToast = function(msg, isError = false, type = 'info') {
+window.showCapiToast = function(msg, isError = false, type = 'info', duration = 4000) {
     const toast = document.getElementById('capiToast');
     const message = document.getElementById('toastMessage');
     
@@ -351,7 +351,7 @@ window.showCapiToast = function(msg, isError = false, type = 'info') {
     if (type === 'error' || isError) toast.classList.add('error');
     else if (type === 'success') toast.classList.add('success');
     
-    setTimeout(() => toast.classList.remove('show'), 4000);
+    setTimeout(() => toast.classList.remove('show'), duration);
 };
 
 // --- MANUAL LOGIN ---
